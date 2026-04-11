@@ -1,0 +1,25 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from database import engine
+import models
+
+models.Base.metadata.create_all(bind=engine)
+
+app = FastAPI(title="Docto API", version="1.0.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+from routers import auth, patients, doctors, bookings, reviews, subscriptions, admin
+app.include_router(auth.router, prefix="/auth", tags=["auth"])
+app.include_router(patients.router, prefix="/patients", tags=["patients"])
+app.include_router(doctors.router, prefix="/doctors", tags=["doctors"])
+app.include_router(bookings.router, prefix="/bookings", tags=["bookings"])
+app.include_router(reviews.router, prefix="/reviews", tags=["reviews"])
+app.include_router(subscriptions.router, prefix="/subscriptions", tags=["subscriptions"])
+app.include_router(admin.router, prefix="/admin", tags=["admin"])

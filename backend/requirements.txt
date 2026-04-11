@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+python-jose[cryptography]
+bcrypt
+python-multipart
+razorpay
+requests
+python-dotenv
+passlib[bcrypt]
+pydantic[email]
