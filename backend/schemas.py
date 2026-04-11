@@ -171,3 +171,4 @@ class RazorpayOrderOut(BaseModel):
     order_id: str
     amount: int
     currency: str
+    booking_id: UUID

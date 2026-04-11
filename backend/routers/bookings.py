@@ -49,7 +49,7 @@ def create_booking(booking: schemas.BookingCreate, db: Session = Depends(get_db)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-    return schemas.RazorpayOrderOut(order_id=order["id"], amount=order["amount"], currency=order["currency"])
+    return schemas.RazorpayOrderOut(order_id=order["id"], amount=order["amount"], currency=order["currency"], booking_id=new_booking.id)
 
 @router.post("/{id}/confirm-payment")
 def confirm_payment(id: UUID, razorpay_payment_id: str, razorpay_signature: str, razorpay_order_id: str, db: Session = Depends(get_db), current_patient: User = Depends(auth.get_current_patient)):

@@ -151,3 +151,12 @@ def get_doctor(id: UUID, db: Session = Depends(get_db)):
     if not doc:
         raise HTTPException(status_code=404, detail="Doctor not found")
     return doc
+
+@router.get("/{id}/slots", response_model=List[schemas.DoctorSlotOut])
+def get_public_slots(id: UUID, db: Session = Depends(get_db)):
+    today = date.today()
+    slots = db.query(DoctorSlot).filter(
+        DoctorSlot.doctor_id == id,
+        DoctorSlot.date >= today
+    ).all()
+    return slots

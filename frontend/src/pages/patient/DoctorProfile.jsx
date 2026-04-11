@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API_URL } from '../../contexts/AuthContext';
 import { useAuth } from '../../contexts/AuthContext';
+import SlotPicker from '../../components/SlotPicker';
 
 export default function DoctorProfile() {
   const { id } = useParams();
@@ -23,8 +24,19 @@ export default function DoctorProfile() {
         setLoading(false);
       }
     };
+    const fetchSlots = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/doctors/${id}/slots`);
+        setSlots(res.data);
+      } catch (e) {
+        console.error(e);
+      }
+    };
     fetchDoc();
+    fetchSlots();
   }, [id]);
+
+  const [selectedSlot, setSelectedSlot] = useState(null);
 
   if (loading) return <div className="p-8">Loading...</div>;
   if (!doctor) return <div className="p-8">Doctor not found.</div>;
@@ -60,15 +72,20 @@ export default function DoctorProfile() {
 
         <div className="mt-8 border-t border-gray-200 pt-6">
           <h2 className="text-xl font-bold mb-4">Availability</h2>
-          {/* Calendar placeholder */}
-          <p className="text-sm text-gray-500 mb-4">Select a slot to book. (WIP frontend slot booking)</p>
+          <SlotPicker slots={slots} selectedSlot={selectedSlot} onSelectSlot={setSelectedSlot} />
+          
           <button 
+             disabled={!selectedSlot}
              onClick={() => {
                 if(!user) navigate('/login');
-                else navigate(`/booking/${id}/confirm`, { state: { doctor } });
+                else navigate(`/booking/${id}/confirm`, { state: { doctor, selectedSlot } });
              }}
-             className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white font-bold rounded-lg shadow hover:bg-blue-700">
-            Book Appointment
+             className={`w-full md:w-auto px-6 py-3 mt-6 font-bold rounded-lg shadow transition-all ${
+                selectedSlot 
+                ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+             }`}>
+            {selectedSlot ? 'Book Selected Slot' : 'Select a Slot to Book'}
           </button>
         </div>
       </div>
