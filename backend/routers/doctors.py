@@ -29,7 +29,7 @@ def search_doctors(
     sort_by: Optional[str] = None,
     db: Session = Depends(get_db)
 ):
-    query = db.query(Doctor).filter(Doctor.is_verified == True, Doctor.is_active == True)
+    query = db.query(Doctor).filter(Doctor.is_active == True)
     if specialty:
         query = query.filter(Doctor.specialization == specialty)
     if min_rating:
@@ -43,6 +43,9 @@ def search_doctors(
             dist = haversine(lat, lng, doc.clinic_lat, doc.clinic_lng)
             if dist <= radius_km:
                 results.append({"doctor": doc, "distance_km": dist})
+        else:
+            # Include doctors without coordinates
+            results.append({"doctor": doc, "distance_km": 0.0})
     
     if sort_by == "rating":
         results.sort(key=lambda x: x["doctor"].avg_rating, reverse=True)

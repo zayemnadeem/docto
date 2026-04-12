@@ -37,9 +37,9 @@ export default function SubscriptionModal({ onClose, onSubscribe }) {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl border border-[#e5e7eb] shadow-xl max-w-2xl w-full overflow-hidden">
+      <div className="bg-white rounded-2xl border border-[#e5e7eb] shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="px-8 pt-8 pb-6 border-b border-[#e5e7eb]">
+        <div className="px-8 pt-6 pb-4 border-b border-[#e5e7eb] shrink-0">
           <div className="flex items-start justify-between">
             <div>
               <h2 className="text-2xl font-medium text-[#111827]" style={{ fontFamily: 'Instrument Serif, serif' }}>
@@ -61,7 +61,7 @@ export default function SubscriptionModal({ onClose, onSubscribe }) {
         </div>
 
         {/* Plans Grid */}
-        <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 overflow-y-auto">
           {PLANS.map(plan => (
             <div
               key={plan.id}

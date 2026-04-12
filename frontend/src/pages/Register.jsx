@@ -44,7 +44,7 @@ export default function Register() {
     setError(null);
     try {
       const payload = {
-        full_name: name, email, phone, password, role,
+        full_name: name, email, phone, password,
         ...(role === 'doctor' && {
           specialization, qualifications,
           experience_years: parseInt(experienceYears) || 0,
@@ -52,12 +52,22 @@ export default function Register() {
           consultation_fee: parseFloat(consultationFee) || 0,
         })
       };
-      await axios.post(`${API_URL}/auth/register`, payload);
+      await axios.post(`${API_URL}/auth/register/${role}`, payload);
       const data = await login(email, password);
       if (data.role === 'doctor') navigate('/doctor/dashboard');
       else navigate('/');
     } catch (err) {
-      setError(err.response?.data?.detail || 'Registration failed. Please try again.');
+      console.error('Registration error:', err);
+      if (err.response && err.response.data && err.response.data.detail) {
+        const detail = err.response.data.detail;
+        if (Array.isArray(detail)) {
+          setError(detail.map(d => `${d.loc.join('.')}: ${d.msg}`).join(', '));
+        } else {
+          setError(typeof detail === 'string' ? detail : JSON.stringify(detail));
+        }
+      } else {
+        setError(err.message || 'Registration failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
