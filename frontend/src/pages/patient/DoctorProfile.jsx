@@ -4,6 +4,8 @@ import axios from 'axios';
 import { API_URL } from '../../contexts/AuthContext';
 import { useAuth } from '../../contexts/AuthContext';
 import SlotPicker from '../../components/SlotPicker';
+import StarRating from '../../components/StarRating';
+import MapView from '../../components/MapView';
 
 export default function DoctorProfile() {
   const { id } = useParams();
@@ -12,6 +14,7 @@ export default function DoctorProfile() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { user, role } = useAuth();
+  const [selectedSlot, setSelectedSlot] = useState(null);
 
   useEffect(() => {
     const fetchDoc = async () => {
@@ -36,57 +39,183 @@ export default function DoctorProfile() {
     fetchSlots();
   }, [id]);
 
-  const [selectedSlot, setSelectedSlot] = useState(null);
+  if (loading) return (
+    <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-8 h-8 border-2 border-[#111827] border-t-transparent rounded-full animate-spin" />
+        <p className="text-sm text-[#9ca3af]">Loading doctor profile…</p>
+      </div>
+    </div>
+  );
 
-  if (loading) return <div className="p-8">Loading...</div>;
-  if (!doctor) return <div className="p-8">Doctor not found.</div>;
+  if (!doctor) return (
+    <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="text-center">
+        <p className="text-[#111827] font-medium">Doctor not found.</p>
+        <button onClick={() => navigate('/')} className="mt-4 border border-[#e5e7eb] text-[#111827] rounded-full px-6 py-2 text-sm font-medium hover:bg-[#f8f9fb] transition">
+          Back to Search
+        </button>
+      </div>
+    </div>
+  );
+
+  const initials = doctor.full_name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'DR';
 
   return (
-    <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 mt-6">
-      <div className="bg-white shadow rounded-lg p-6">
-        <div className="flex flex-col md:flex-row items-center md:items-start">
-          <div className="w-32 h-32 bg-gray-200 rounded-full overflow-hidden flex-shrink-0">
-             {doctor.profile_photo ? (
-               <img src={doctor.profile_photo} alt={doctor.full_name} className="w-full h-full object-cover" />
-             ) : (
-               <div className="w-full h-full flex items-center justify-center text-gray-500 text-4xl">P</div>
-             )}
-          </div>
-          <div className="mt-4 md:mt-0 md:ml-6 flex-grow text-center md:text-left">
-            <h1 className="text-3xl font-bold text-gray-900">{doctor.full_name}</h1>
-            <p className="text-xl text-blue-600 font-medium mt-1">{doctor.specialization}</p>
-            <p className="text-gray-500 mt-2">{doctor.qualifications} | {doctor.experience_years} years experience</p>
-            
-            <div className="mt-4 inline-flex items-center px-4 py-2 bg-blue-50 text-blue-800 rounded">
-               <span className="font-semibold mr-2">Consultation Fee:</span> 
-               <span>₹{doctor.consultation_fee}</span>
-               <span className="ml-2 text-xs text-gray-500">(Same price as clinic — no markup)</span>
+    <div className="bg-white min-h-screen">
+      {/* Hero Strip */}
+      <div className="bg-[#f8f9fb] border-b border-[#e5e7eb]">
+        <div className="max-w-6xl mx-auto px-6 py-10">
+          <div className="flex flex-col md:flex-row gap-6 items-start">
+            {/* Avatar */}
+            <div className="relative flex-shrink-0">
+              <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-[#e5e7eb] bg-white shadow-sm">
+                {doctor.profile_photo ? (
+                  <img src={doctor.profile_photo} alt={doctor.full_name} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-[#374151] text-3xl font-medium" style={{ fontFamily: 'Instrument Serif, serif' }}>
+                    {initials}
+                  </div>
+                )}
+              </div>
+              {doctor.is_verified && (
+                <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-[#10b981] flex items-center justify-center border-2 border-white shadow-sm" title="Verified">
+                  <svg className="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              )}
+            </div>
+
+            {/* Info */}
+            <div className="flex-grow">
+              <h1 className="text-3xl text-[#111827]" style={{ fontFamily: 'Instrument Serif, serif' }}>
+                {doctor.full_name}
+              </h1>
+              <div className="flex flex-wrap items-center gap-2 mt-2">
+                <span className="text-xs font-medium px-3 py-1 rounded-full bg-[#f3f4f6] text-[#374151]">
+                  {doctor.specialization}
+                </span>
+                {doctor.experience_years && (
+                  <span className="text-xs font-medium px-3 py-1 rounded-full bg-[#f3f4f6] text-[#374151]">
+                    {doctor.experience_years} yrs experience
+                  </span>
+                )}
+              </div>
+              <div className="mt-3">
+                <StarRating rating={doctor.avg_rating || 0} readOnly totalReviews={doctor.total_reviews || 0} />
+              </div>
+            </div>
+
+            {/* Book CTA */}
+            <div className="flex-shrink-0">
+              <a href="#availability" className="bg-[#111827] text-white rounded-full px-7 py-3 text-sm font-medium hover:bg-[#374151] transition inline-block">
+                Book Appointment
+              </a>
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="mt-8 border-t border-gray-200 pt-6">
-          <h2 className="text-xl font-bold mb-4">About</h2>
-          <p className="text-gray-700">{doctor.bio || "No bio available."}</p>
-        </div>
+      {/* Content */}
+      <div className="max-w-6xl mx-auto px-6 py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* About */}
+            {doctor.bio && (
+              <section>
+                <h2 className="text-xl text-[#111827] mb-3" style={{ fontFamily: 'Instrument Serif, serif' }}>About</h2>
+                <p className="text-[#374151] leading-relaxed text-sm">{doctor.bio}</p>
+              </section>
+            )}
 
-        <div className="mt-8 border-t border-gray-200 pt-6">
-          <h2 className="text-xl font-bold mb-4">Availability</h2>
-          <SlotPicker slots={slots} selectedSlot={selectedSlot} onSelectSlot={setSelectedSlot} />
-          
-          <button 
-             disabled={!selectedSlot}
-             onClick={() => {
-                if(!user) navigate('/login');
-                else navigate(`/booking/${id}/confirm`, { state: { doctor, selectedSlot } });
-             }}
-             className={`w-full md:w-auto px-6 py-3 mt-6 font-bold rounded-lg shadow transition-all ${
-                selectedSlot 
-                ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-             }`}>
-            {selectedSlot ? 'Book Selected Slot' : 'Select a Slot to Book'}
-          </button>
+            {/* Qualifications */}
+            {doctor.qualifications && (
+              <section>
+                <h2 className="text-xl text-[#111827] mb-3" style={{ fontFamily: 'Instrument Serif, serif' }}>Qualifications</h2>
+                <p className="text-[#374151] text-sm">{doctor.qualifications}</p>
+              </section>
+            )}
+
+            {/* Clinic Info */}
+            {(doctor.clinic_name || doctor.clinic_address) && (
+              <section>
+                <h2 className="text-xl text-[#111827] mb-3" style={{ fontFamily: 'Instrument Serif, serif' }}>Clinic</h2>
+                <div className="bg-[#f8f9fb] rounded-2xl border border-[#e5e7eb] p-5">
+                  {doctor.clinic_name && <p className="font-medium text-[#111827]">{doctor.clinic_name}</p>}
+                  {doctor.clinic_address && <p className="text-sm text-[#6b7280] mt-1">{doctor.clinic_address}</p>}
+                </div>
+              </section>
+            )}
+
+            {/* Map */}
+            {(doctor.clinic_lat && doctor.clinic_lng) && (
+              <section>
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-xl text-[#111827]" style={{ fontFamily: 'Instrument Serif, serif' }}>Location</h2>
+                  <a
+                    href={`https://maps.google.com/?q=${doctor.clinic_lat},${doctor.clinic_lng}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-sm text-[#111827] underline underline-offset-2 hover:text-[#374151]"
+                  >
+                    Get Directions →
+                  </a>
+                </div>
+                <MapView
+                  lat={doctor.clinic_lat}
+                  lng={doctor.clinic_lng}
+                  markers={[doctor]}
+                  className="h-[280px]"
+                />
+              </section>
+            )}
+          </div>
+
+          {/* Right Column */}
+          <div className="space-y-6">
+            {/* Fee Card */}
+            <div className="bg-white rounded-2xl border border-[#e5e7eb] shadow-sm p-6">
+              <p className="text-sm text-[#6b7280] font-medium uppercase tracking-wide">Consultation Fee</p>
+              <p className="text-4xl font-semibold text-[#111827] mt-1" style={{ fontFamily: 'Instrument Serif, serif' }}>
+                &#8377;{doctor.consultation_fee}
+              </p>
+              <p className="text-xs text-[#9ca3af] mt-1">Same price as clinic — no markup</p>
+              <button
+                id="fee-card-book-btn"
+                onClick={() => {
+                  if (!user) navigate('/login');
+                  else if (selectedSlot) navigate(`/booking/${id}/confirm`, { state: { doctor, selectedSlot } });
+                  else document.getElementById('availability')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                disabled={!selectedSlot && !!user}
+                className={`w-full mt-5 rounded-full py-3 text-sm font-medium transition ${
+                  selectedSlot ? 'bg-[#111827] text-white hover:bg-[#374151]' : 'bg-[#f3f4f6] text-[#9ca3af] cursor-default'
+                }`}
+              >
+                {!user ? 'Login to Book' : selectedSlot ? 'Book Appointment' : 'Select a slot below'}
+              </button>
+            </div>
+
+            {/* Slot Picker */}
+            <div id="availability">
+              <h2 className="text-xl text-[#111827] mb-4" style={{ fontFamily: 'Instrument Serif, serif' }}>Availability</h2>
+              <SlotPicker slots={slots} selectedSlot={selectedSlot} onSelectSlot={setSelectedSlot} />
+              {selectedSlot && (
+                <button
+                  id="proceed-booking-btn"
+                  onClick={() => {
+                    if (!user) navigate('/login');
+                    else navigate(`/booking/${id}/confirm`, { state: { doctor, selectedSlot } });
+                  }}
+                  className="w-full mt-4 bg-[#111827] text-white rounded-full py-3 text-sm font-medium hover:bg-[#374151] transition"
+                >
+                  Proceed to Book
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -2,8 +2,18 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../contexts/AuthContext';
 
+const STATUS_STYLES = {
+  confirmed: 'bg-[#fef3c7] text-[#92400e]',
+  completed: 'bg-[#d1fae5] text-[#065f46]',
+  cancelled: 'bg-[#fee2e2] text-[#991b1b]',
+  no_show: 'bg-[#f3f4f6] text-[#374151]',
+};
+
+const TABS = ['Today', 'Upcoming', 'All'];
+
 export default function Appointments() {
   const [appointments, setAppointments] = useState([]);
+  const [activeTab, setActiveTab] = useState('Today');
 
   const fetchAppts = async () => {
     try {
@@ -23,36 +33,137 @@ export default function Appointments() {
       });
       fetchAppts();
     } catch (e) { alert("Error updating status"); }
-  }
+  };
+
+  const formatDate = (dateStr) => {
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+  };
+  const formatTime = (timeStr) => {
+    if (!timeStr) return '';
+    const [h, m] = timeStr.split(':').map(Number);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const hour = h % 12 || 12;
+    return `${hour}:${String(m).padStart(2, '0')} ${ampm}`;
+  };
+
+  const filterAppts = (tab) => {
+    const today = new Date().toISOString().split('T')[0];
+    if (tab === 'Today') return appointments.filter(a => a.slot?.date === today);
+    if (tab === 'Upcoming') return appointments.filter(a => a.slot?.date >= today && a.status === 'confirmed');
+    return appointments;
+  };
+
+  const filtered = filterAppts(activeTab);
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">Patient Appointments</h2>
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Patient</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date & Time</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {appointments.map(a => (
-              <tr key={a.id}>
-                <td className="px-6 py-4 whitespace-nowrap">{a.patient.full_name}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{a.slot.date} {a.slot.start_time.slice(0,5)}</td>
-                <td className="px-6 py-4 whitespace-nowrap"><span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">{a.status}</span></td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {a.status === 'confirmed' && (
-                    <button onClick={() => markComplete(a.id)} className="text-green-600 hover:underline">Complete</button>
-                  )}
-                </td>
+    <div className="min-h-screen bg-white py-10 px-4">
+      <div className="max-w-5xl mx-auto">
+        {/* Header */}
+        <h1 className="text-3xl text-[#111827] mb-8" style={{ fontFamily: 'Instrument Serif, serif' }}>
+          Appointments
+        </h1>
+
+        {/* Tab Strip */}
+        <div className="flex gap-1 bg-[#f8f9fb] rounded-full p-1 w-fit mb-6 border border-[#e5e7eb]">
+          {TABS.map(tab => (
+            <button
+              key={tab}
+              id={`appts-tab-${tab.toLowerCase()}`}
+              onClick={() => setActiveTab(tab)}
+              className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
+                activeTab === tab
+                  ? 'bg-[#111827] text-white shadow-sm'
+                  : 'text-[#6b7280] hover:text-[#111827]'
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
+        {/* Desktop Table */}
+        <div className="hidden md:block bg-white rounded-2xl border border-[#e5e7eb] shadow-sm overflow-hidden">
+          <table className="min-w-full">
+            <thead>
+              <tr className="border-b border-[#e5e7eb]">
+                {['Patient', 'Date & Time', 'Status', 'Actions'].map(h => (
+                  <th key={h} className="px-6 py-4 text-left text-xs font-medium text-[#9ca3af] uppercase tracking-wide">
+                    {h}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-[#e5e7eb]">
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="px-6 py-12 text-center text-sm text-[#9ca3af]">
+                    No appointments in this category.
+                  </td>
+                </tr>
+              ) : filtered.map(a => (
+                <tr key={a.id} className="hover:bg-[#f8f9fb] transition-colors">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-[#f3f4f6] border border-[#e5e7eb] flex items-center justify-center text-xs font-medium text-[#374151]" style={{ fontFamily: 'Instrument Serif, serif' }}>
+                        {a.patient?.full_name?.charAt(0) || 'P'}
+                      </div>
+                      <span className="text-sm font-medium text-[#111827]">{a.patient?.full_name}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-[#374151]">
+                    {formatDate(a.slot?.date)} · {formatTime(a.slot?.start_time)}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`text-xs font-medium px-3 py-1 rounded-full capitalize ${STATUS_STYLES[a.status] || STATUS_STYLES.confirmed}`}>
+                      {a.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    {a.status === 'confirmed' && (
+                      <button
+                        id={`complete-appt-${a.id}`}
+                        onClick={() => markComplete(a.id)}
+                        className="bg-[#111827] text-white rounded-full px-4 py-1.5 text-xs font-medium hover:bg-[#374151] transition"
+                      >
+                        Mark Complete
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Card Stack */}
+        <div className="md:hidden space-y-3">
+          {filtered.length === 0 ? (
+            <div className="py-12 text-center">
+              <p className="text-sm text-[#9ca3af]">No appointments in this category.</p>
+            </div>
+          ) : filtered.map(a => (
+            <div key={a.id} className="bg-white rounded-2xl border border-[#e5e7eb] shadow-sm p-5">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="font-medium text-[#111827] text-sm">{a.patient?.full_name}</p>
+                  <p className="text-xs text-[#9ca3af] mt-1">{formatDate(a.slot?.date)} · {formatTime(a.slot?.start_time)}</p>
+                </div>
+                <span className={`text-xs font-medium px-3 py-1 rounded-full capitalize ${STATUS_STYLES[a.status] || STATUS_STYLES.confirmed}`}>
+                  {a.status}
+                </span>
+              </div>
+              {a.status === 'confirmed' && (
+                <button
+                  onClick={() => markComplete(a.id)}
+                  className="mt-3 bg-[#111827] text-white rounded-full px-4 py-2 text-xs font-medium hover:bg-[#374151] transition w-full"
+                >
+                  Mark Complete
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

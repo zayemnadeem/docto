@@ -2,40 +2,80 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 export default function DoctorCard({ doctor }) {
+  const initials = doctor.full_name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'DR';
+
   return (
-    <div className="bg-white rounded-lg shadow p-4 mb-4 flex">
-      <div className="w-24 h-24 bg-gray-200 rounded-md overflow-hidden flex-shrink-0">
-        {doctor.profile_photo ? (
-          <img src={doctor.profile_photo} alt={doctor.full_name} className="w-full h-full object-cover" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-500 text-3xl">P</div>
-        )}
-      </div>
-      <div className="ml-4 flex-grow">
-        <div className="flex justify-between items-start">
-          <div>
-            <h3 className="text-lg font-bold text-gray-900">{doctor.full_name}</h3>
-            <p className="text-sm text-blue-600 font-medium">{doctor.specialization}</p>
-          </div>
-          {doctor.is_verified && <span className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">Verified</span>}
-        </div>
-        <div className="mt-2 text-sm text-gray-500">
-          <p>{doctor.experience_years} years experience</p>
-          <p className="mt-1">Fee: ₹{doctor.consultation_fee}</p>
-          {doctor.distance_km !== undefined && (
-            <p className="mt-1 text-xs text-gray-400">{doctor.distance_km.toFixed(2)} km away</p>
+    <div className="bg-white rounded-2xl border border-[#e5e7eb] shadow-sm p-6 flex flex-col gap-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group">
+      {/* Header: Avatar + Name + Specialty */}
+      <div className="flex items-start gap-4">
+        <div className="w-14 h-14 rounded-full overflow-hidden flex-shrink-0 bg-[#f3f4f6] border border-[#e5e7eb]">
+          {doctor.profile_photo ? (
+            <img src={doctor.profile_photo} alt={doctor.full_name} className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-[#374151] text-lg font-semibold" style={{ fontFamily: 'Instrument Serif, serif' }}>
+              {initials}
+            </div>
           )}
         </div>
-        <div className="mt-3 flex justify-between items-center">
-          <div className="flex items-center">
-            <span className="text-yellow-400">★</span>
-            <span className="ml-1 text-sm font-semibold">{doctor.avg_rating.toFixed(1)}</span>
-            <span className="ml-1 text-xs text-gray-500">({doctor.total_reviews} reviews)</span>
+        <div className="flex-grow min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h3 className="text-[#111827] font-semibold text-base leading-tight truncate" style={{ fontFamily: 'Instrument Serif, serif' }}>
+              {doctor.full_name}
+            </h3>
+            {doctor.is_verified && (
+              <span className="flex-shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#10b981]/10" title="Verified">
+                <svg className="w-3.5 h-3.5 text-[#10b981]" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+              </span>
+            )}
           </div>
-          <Link to={`/doctor/${doctor.id}`} className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700">
-            Book Appointment
-          </Link>
+          <span className="inline-block mt-1 text-xs font-medium px-3 py-1 rounded-full bg-[#f3f4f6] text-[#374151]">
+            {doctor.specialization}
+          </span>
         </div>
+      </div>
+
+      {/* Stats Row */}
+      <div className="flex flex-col gap-1.5 text-sm text-[#6b7280]">
+        {/* Rating */}
+        <div className="flex items-center gap-1.5">
+          <span className="text-[#f59e0b]">★</span>
+          <span className="font-semibold text-[#111827]">{doctor.avg_rating?.toFixed(1) || '—'}</span>
+          <span className="text-[#9ca3af]">({doctor.total_reviews || 0} reviews)</span>
+        </div>
+        {/* Distance + Clinic */}
+        {doctor.distance_km !== undefined && (
+          <div className="flex items-center gap-1.5">
+            <span className="text-[#9ca3af]">📍</span>
+            <span>{doctor.distance_km?.toFixed(1)} km away</span>
+            {doctor.clinic_name && <span className="text-[#9ca3af]">· {doctor.clinic_name}</span>}
+          </div>
+        )}
+        {/* Fee */}
+        <div className="flex items-center gap-1.5">
+          <span className="text-[#9ca3af]">💰</span>
+          <span className="font-medium text-[#111827]">₹{doctor.consultation_fee}</span>
+          <span className="text-[#9ca3af]">consultation</span>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="flex gap-2 mt-auto pt-1">
+        <Link
+          to={`/doctor/${doctor.id}`}
+          id={`view-doctor-${doctor.id}`}
+          className="flex-1 text-center border border-[#e5e7eb] text-[#111827] rounded-full px-4 py-2 text-sm font-medium hover:bg-[#f8f9fb] transition"
+        >
+          View Profile
+        </Link>
+        <Link
+          to={`/doctor/${doctor.id}`}
+          id={`book-doctor-${doctor.id}`}
+          className="flex-1 text-center bg-[#111827] text-white rounded-full px-4 py-2 text-sm font-medium hover:bg-[#374151] transition"
+        >
+          Book Now
+        </Link>
       </div>
     </div>
   );

@@ -5,14 +5,14 @@ export default function StarRating({ rating, setRating, readOnly = false, totalR
   const stars = Array.from({ length: maxStars }, (_, i) => i + 1);
 
   return (
-    <div className="flex items-center space-x-1">
-      <div className="flex">
+    <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-0.5">
         {stars.map((star) => (
           <svg
             key={star}
             onClick={() => !readOnly && setRating && setRating(star)}
-            className={`w-5 h-5 ${!readOnly ? 'cursor-pointer hover:scale-110 transition-transform' : ''} ${
-              star <= rating ? 'text-yellow-400' : 'text-gray-300'
+            className={`w-5 h-5 transition-transform ${!readOnly ? 'cursor-pointer hover:scale-110' : ''} ${
+              star <= rating ? 'text-[#f59e0b]' : 'text-[#e5e7eb]'
             }`}
             fill="currentColor"
             viewBox="0 0 20 20"
@@ -22,8 +22,9 @@ export default function StarRating({ rating, setRating, readOnly = false, totalR
           </svg>
         ))}
       </div>
+      <span className="text-sm font-semibold text-[#111827] ml-0.5">{rating?.toFixed(1) || '--'}</span>
       {totalReviews !== null && (
-        <span className="text-sm text-gray-500 font-medium ml-2">({totalReviews} reviews)</span>
+        <span className="text-sm text-[#9ca3af]">({totalReviews} reviews)</span>
       )}
     </div>
   );

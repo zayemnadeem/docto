@@ -13,7 +13,25 @@ export default function BookingConfirm() {
   const [error, setError] = useState(null);
 
   if (!doctor || !selectedSlot) {
-    return <div className="p-8 text-center text-red-500">Invalid booking parameters. Go back and select a slot.</div>;
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center p-6">
+        <div className="text-center max-w-sm">
+          <div className="w-16 h-16 rounded-full bg-[#fef2f2] border border-[#fecaca] flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-[#ef4444]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+          </div>
+          <p className="text-[#111827] font-medium">Invalid booking parameters</p>
+          <p className="text-sm text-[#9ca3af] mt-1">Please go back and select a slot.</p>
+          <button
+            onClick={() => navigate(-1)}
+            className="mt-5 border border-[#e5e7eb] text-[#111827] rounded-full px-6 py-2.5 text-sm font-medium hover:bg-[#f8f9fb] transition"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
   }
 
   const handleBooking = async () => {
@@ -50,7 +68,7 @@ export default function BookingConfirm() {
           }
         },
         prefill: { name: user?.full_name || '', email: user?.email || '' },
-        theme: { color: "#2563eb" }
+        theme: { color: "#111827" }
       };
       
       if (window.Razorpay) {
@@ -66,43 +84,118 @@ export default function BookingConfirm() {
     }
   };
 
+  const fee = doctor.consultation_fee;
+  const advance = Math.round(fee * 0.3);
+  const balance = fee - advance;
+
+  const initials = doctor.full_name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'DR';
+
+  const formatSlotDate = (dateStr) => {
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  };
+  const formatTime = (timeStr) => {
+    const [h, m] = timeStr.split(':').map(Number);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const hour = h % 12 || 12;
+    return `${hour}:${String(m).padStart(2, '0')} ${ampm}`;
+  };
+
   return (
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg border border-gray-100">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-4">Confirm Appointment</h2>
-      
-      {error && <div className="mb-4 p-3 bg-red-100 text-red-600 rounded">{error}</div>}
-
-      <div className="space-y-4">
-        <div className="flex items-center space-x-4">
-           {doctor.profile_photo ? (
-             <img src={doctor.profile_photo} alt={doctor.full_name} className="w-16 h-16 rounded-full object-cover shadow-sm"/>
-           ) : (
-             <div className="w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xl font-bold font-serif">
-               {doctor.full_name.charAt(0)}
-             </div>
-           )}
-           <div>
-             <h3 className="text-xl font-semibold">{doctor.full_name}</h3>
-             <p className="text-sm text-gray-500">{doctor.specialization}</p>
-           </div>
+    <div className="min-h-screen bg-white flex items-start justify-center py-12 px-4">
+      <div className="w-full max-w-md">
+        {/* Header */}
+        <div className="mb-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 text-sm text-[#9ca3af] hover:text-[#374151] transition mb-6"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
+          </button>
+          <h1 className="text-3xl text-[#111827]" style={{ fontFamily: 'Instrument Serif, serif' }}>
+            Confirm Appointment
+          </h1>
         </div>
 
-        <div className="bg-blue-50 p-4 rounded-lg mt-4">
-          <p className="text-gray-700"><strong>Date:</strong> {selectedSlot.date}</p>
-          <p className="text-gray-700"><strong>Time:</strong> {selectedSlot.start_time.slice(0,5)} - {selectedSlot.end_time.slice(0,5)}</p>
-          <p className="text-gray-700 mt-2"><strong>Total Fee:</strong> ₹{doctor.consultation_fee}</p>
-          <p className="text-blue-800 font-semibold text-lg mt-2 pt-2 border-t border-blue-200">
-             Advance Payment required (30%): ₹{Math.round(doctor.consultation_fee * 0.3)}
-          </p>
-          <span className="text-xs text-gray-500">* Advance is required to secure the slot and prevent no-shows.</span>
+        {/* Error */}
+        {error && (
+          <div className="mb-4 px-4 py-3 bg-[#fef2f2] border border-[#fecaca] rounded-2xl text-sm text-[#ef4444]">
+            {error}
+          </div>
+        )}
+
+        {/* Summary Card */}
+        <div className="bg-white rounded-2xl border border-[#e5e7eb] shadow-sm p-6 mb-4">
+          {/* Doctor */}
+          <div className="flex items-center gap-4 pb-5 border-b border-[#e5e7eb]">
+            <div className="w-14 h-14 rounded-full overflow-hidden bg-[#f3f4f6] border border-[#e5e7eb] flex-shrink-0">
+              {doctor.profile_photo ? (
+                <img src={doctor.profile_photo} alt={doctor.full_name} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-[#374151] text-lg font-medium" style={{ fontFamily: 'Instrument Serif, serif' }}>
+                  {initials}
+                </div>
+              )}
+            </div>
+            <div>
+              <p className="font-medium text-[#111827]">{doctor.full_name}</p>
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#f3f4f6] text-[#374151] mt-1 inline-block">
+                {doctor.specialization}
+              </span>
+            </div>
+          </div>
+
+          {/* Date/Time */}
+          <div className="py-5 border-b border-[#e5e7eb] space-y-2">
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-[#6b7280]">Date</span>
+              <span className="font-medium text-[#111827]">{formatSlotDate(selectedSlot.date)}</span>
+            </div>
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-[#6b7280]">Time</span>
+              <span className="font-medium text-[#111827]">
+                {formatTime(selectedSlot.start_time)} – {formatTime(selectedSlot.end_time)}
+              </span>
+            </div>
+          </div>
+
+          {/* Fee Breakdown */}
+          <div className="pt-5 space-y-3">
+            <p className="text-xs text-[#9ca3af] font-medium uppercase tracking-wide mb-3">Fee Breakdown</p>
+            <div className="flex justify-between text-sm">
+              <span className="text-[#6b7280]">Consultation fee</span>
+              <span className="text-[#111827] font-medium">&#8377;{fee}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-[#6b7280]">Advance now (30%)</span>
+              <span className="text-[#10b981] font-semibold">&#8377;{advance}</span>
+            </div>
+            <div className="flex justify-between text-sm pt-3 border-t border-[#e5e7eb]">
+              <span className="text-[#6b7280]">Balance at clinic</span>
+              <span className="text-[#9ca3af]">&#8377;{balance}</span>
+            </div>
+          </div>
         </div>
 
-        <button 
-          onClick={handleBooking} 
+        <p className="text-xs text-[#9ca3af] text-center mb-5">
+          * Advance secures your slot and prevents no-shows.
+        </p>
+
+        {/* Pay Button */}
+        <button
+          id="pay-advance-btn"
+          onClick={handleBooking}
           disabled={loading}
-          className={`w-full py-3 mt-6 rounded-lg font-bold text-white shadow-md transition-all ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg'}`}
+          className={`w-full py-3.5 rounded-full text-sm font-medium transition-all ${
+            loading
+              ? 'bg-[#f3f4f6] text-[#9ca3af] cursor-not-allowed'
+              : 'bg-[#111827] text-white hover:bg-[#374151]'
+          }`}
         >
-          {loading ? 'Processing...' : 'Pay Advance & Book'}
+          {loading ? 'Processing…' : `Proceed to Pay ₹${advance}`}
         </button>
       </div>
     </div>
