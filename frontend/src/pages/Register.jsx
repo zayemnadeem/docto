@@ -84,7 +84,7 @@ export default function Register() {
       <div className="w-full max-w-lg">
         {/* Logo */}
         <div className="flex justify-center mb-8">
-          <Link to="/"><img src="/docto-logo.jpg" alt="Docto" className="h-16 md:h-20 w-auto" /></Link>
+          <Link to="/"><img src="/doctonewlogo.jpeg" alt="Docto" className="h-16 md:h-20 w-auto" /></Link>
         </div>
 
         {/* Card */}

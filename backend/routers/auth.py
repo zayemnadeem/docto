@@ -34,17 +34,8 @@ def register_doctor(doctor: schemas.DoctorCreate, db: Session = Depends(get_db))
     
     lat = doctor.clinic_lat
     lng = doctor.clinic_lng
-    if doctor.clinic_address and lat is None:
-        try:
-            import requests
-            url = "https://maps.googleapis.com/maps/api/geocode/json"
-            params = {"address": doctor.clinic_address, "key": os.getenv("GOOGLE_MAPS_API_KEY", "")}
-            res = requests.get(url, params=params).json()
-            if res.get("status") == "OK":
-                loc = res["results"][0]["geometry"]["location"]
-                lat, lng = loc["lat"], loc["lng"]
-        except Exception:
-            pass
+    # Geocoding will be done via Google Geocoding API once key is configured
+    # (clinic_lat/clinic_lng will be sent from frontend when available)
 
     hashed_password = auth.get_password_hash(doctor.password)
     new_doctor = models.Doctor(

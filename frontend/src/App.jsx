@@ -25,7 +25,7 @@ function PrivateRoute({ children, role }) {
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="flex flex-col items-center gap-4">
-        <img src="/docto-logo.jpg" alt="Docto" className="h-16 md:h-20 opacity-80 animate-pulse" />
+        <img src="/doctonewlogo.jpeg" alt="Docto" className="h-16 md:h-20 opacity-80 animate-pulse" />
         <div className="w-6 h-6 border-2 border-[#111827] border-t-transparent rounded-full animate-spin" />
       </div>
     </div>

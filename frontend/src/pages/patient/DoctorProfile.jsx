@@ -5,7 +5,6 @@ import { API_URL } from '../../contexts/AuthContext';
 import { useAuth } from '../../contexts/AuthContext';
 import SlotPicker from '../../components/SlotPicker';
 import StarRating from '../../components/StarRating';
-import MapView from '../../components/MapView';
 
 export default function DoctorProfile() {
   const { id } = useParams();
@@ -60,6 +59,9 @@ export default function DoctorProfile() {
   );
 
   const initials = doctor.full_name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'DR';
+  const photoUrl = doctor.profile_photo
+    ? (doctor.profile_photo.startsWith('http') ? doctor.profile_photo : `${API_URL}${doctor.profile_photo}`)
+    : null;
 
   return (
     <div className="bg-white min-h-screen">
@@ -70,8 +72,8 @@ export default function DoctorProfile() {
             {/* Avatar */}
             <div className="relative flex-shrink-0">
               <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-[#e5e7eb] bg-white shadow-sm">
-                {doctor.profile_photo ? (
-                  <img src={doctor.profile_photo} alt={doctor.full_name} className="w-full h-full object-cover" />
+                {photoUrl ? (
+                  <img src={photoUrl} alt={doctor.full_name} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-[#374151] text-3xl font-medium" style={{ fontFamily: 'Instrument Serif, serif' }}>
                     {initials}
@@ -138,37 +140,37 @@ export default function DoctorProfile() {
               </section>
             )}
 
-            {/* Clinic Info */}
+            {/* Clinic Info + Directions */}
             {(doctor.clinic_name || doctor.clinic_address) && (
               <section>
                 <h2 className="text-xl text-[#111827] mb-3" style={{ fontFamily: 'Instrument Serif, serif' }}>Clinic</h2>
                 <div className="bg-[#f8f9fb] rounded-2xl border border-[#e5e7eb] p-5">
                   {doctor.clinic_name && <p className="font-medium text-[#111827]">{doctor.clinic_name}</p>}
-                  {doctor.clinic_address && <p className="text-sm text-[#6b7280] mt-1">{doctor.clinic_address}</p>}
-                </div>
-              </section>
-            )}
-
-            {/* Map */}
-            {(doctor.clinic_lat && doctor.clinic_lng) && (
-              <section>
-                <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-xl text-[#111827]" style={{ fontFamily: 'Instrument Serif, serif' }}>Location</h2>
+                  {doctor.clinic_address && (
+                    <p className="text-sm text-[#6b7280] mt-1 flex items-start gap-1.5">
+                      <svg className="w-4 h-4 mt-0.5 flex-shrink-0 text-[#9ca3af]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      {doctor.clinic_address}
+                    </p>
+                  )}
                   <a
-                    href={`https://maps.google.com/?q=${doctor.clinic_lat},${doctor.clinic_lng}`}
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+                      doctor.clinic_lat && doctor.clinic_lng
+                        ? `${doctor.clinic_lat},${doctor.clinic_lng}`
+                        : doctor.clinic_address || doctor.clinic_name
+                    )}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-sm text-[#111827] underline underline-offset-2 hover:text-[#374151]"
+                    className="mt-4 inline-flex items-center gap-2 bg-[#111827] text-white text-sm font-medium px-5 py-2.5 rounded-full hover:bg-[#374151] transition"
                   >
-                    Get Directions →
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                    </svg>
+                    Get Directions
                   </a>
                 </div>
-                <MapView
-                  lat={doctor.clinic_lat}
-                  lng={doctor.clinic_lng}
-                  markers={[doctor]}
-                  className="h-[280px]"
-                />
               </section>
             )}
           </div>

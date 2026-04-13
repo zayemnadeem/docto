@@ -1,9 +1,13 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+import os
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine
 import models
 
 models.Base.metadata.create_all(bind=engine)
+
+os.makedirs("uploads", exist_ok=True)
 
 app = FastAPI(title="Docto API", version="1.0.0")
 
@@ -23,3 +27,5 @@ app.include_router(bookings.router, prefix="/bookings", tags=["bookings"])
 app.include_router(reviews.router, prefix="/reviews", tags=["reviews"])
 app.include_router(subscriptions.router, prefix="/subscriptions", tags=["subscriptions"])
 app.include_router(admin.router, prefix="/admin", tags=["admin"])
+
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")

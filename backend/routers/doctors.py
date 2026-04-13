@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, Query, HTTPException, status
+from fastapi import APIRouter, Depends, Query, HTTPException, status, UploadFile, File
+import os, shutil, uuid as _uuid
 from sqlalchemy.orm import Session
 from database import get_db
 from models import Doctor, DoctorSlot, Booking, User, SubscriptionPlanEnum
@@ -24,43 +25,45 @@ def search_doctors(
     lng: float,
     radius_km: float = 10.0,
     specialty: Optional[str] = None,
-    min_rating: Optional[float] = None,
-    max_fee: Optional[float] = None,
+    query_str: Optional[str] = Query(None, alias="query"),
     sort_by: Optional[str] = None,
     db: Session = Depends(get_db)
 ):
     query = db.query(Doctor).filter(Doctor.is_active == True)
     if specialty:
         query = query.filter(Doctor.specialization == specialty)
-    if min_rating:
-        query = query.filter(Doctor.avg_rating >= min_rating)
-    if max_fee:
-        query = query.filter(Doctor.consultation_fee <= max_fee)
+    if query_str:
+        from sqlalchemy import or_
+        search_filter = f"%{query_str}%"
+        query = query.filter(or_(
+            Doctor.full_name.ilike(search_filter),
+            Doctor.clinic_address.ilike(search_filter)
+        ))
 
     results = []
     for doc in query.all():
         if doc.clinic_lat and doc.clinic_lng:
             dist = haversine(lat, lng, doc.clinic_lat, doc.clinic_lng)
             if dist <= radius_km:
-                results.append({"doctor": doc, "distance_km": dist})
+                results.append({"doctor": doc, "distance_km": round(dist, 2), "has_coords": True})
         else:
-            # Include doctors without coordinates
-            results.append({"doctor": doc, "distance_km": 0.0})
-    
-    if sort_by == "rating":
-        results.sort(key=lambda x: x["doctor"].avg_rating, reverse=True)
-    elif sort_by == "fee":
-        results.sort(key=lambda x: x["doctor"].consultation_fee)
-    elif sort_by == "experience":
-        results.sort(key=lambda x: x["doctor"].experience_years, reverse=True)
-    elif sort_by == "distance" or not sort_by:
-        results.sort(key=lambda x: x["distance_km"])
+            # No coordinates — push to end with 9999 instead of faking 0.0
+            results.append({"doctor": doc, "distance_km": 9999.0, "has_coords": False})
 
     plan_rank = {"enterprise": 0, "annual": 1, "quarterly": 2, "monthly": 3, "free": 4}
-    results.sort(key=lambda x: (
-        int(x["distance_km"]),
-        plan_rank.get(x["doctor"].subscription_plan.value if x["doctor"].subscription_plan else "free", 4)
-    ))
+
+    if sort_by == "rating":
+        results.sort(key=lambda x: x["doctor"].avg_rating or 0, reverse=True)
+    elif sort_by == "fee":
+        results.sort(key=lambda x: x["doctor"].consultation_fee or 0)
+    elif sort_by == "experience":
+        results.sort(key=lambda x: x["doctor"].experience_years or 0, reverse=True)
+    else:
+        # Default: nearest first, subscription plan as tiebreaker within same km bucket
+        results.sort(key=lambda x: (
+            x["distance_km"],
+            plan_rank.get(x["doctor"].subscription_plan.value if x["doctor"].subscription_plan else "free", 4)
+        ))
     
     out = []
     for r in results:
@@ -135,6 +138,32 @@ def no_show_appointment(booking_id: UUID, db: Session = Depends(get_db), current
     booking.payment_status = "forfeited"
     db.commit()
     return {"message": "No-show marked"}
+
+@router.post("/me/photo")
+async def upload_profile_photo(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_doctor: Doctor = Depends(auth.get_current_doctor)
+):
+    allowed = {"image/jpeg", "image/png", "image/webp", "image/jpg"}
+    if file.content_type not in allowed:
+        raise HTTPException(status_code=400, detail="Only JPEG/PNG/WebP images are allowed.")
+
+    ext = file.filename.rsplit(".", 1)[-1] if "." in file.filename else "jpg"
+    filename = f"doctor_{current_doctor.id}_{_uuid.uuid4().hex}.{ext}"
+    upload_dir = "uploads"
+    os.makedirs(upload_dir, exist_ok=True)
+    file_path = os.path.join(upload_dir, filename)
+
+    with open(file_path, "wb") as buf:
+        shutil.copyfileobj(file.file, buf)
+
+    photo_url = f"/uploads/{filename}"
+    current_doctor.profile_photo = photo_url
+    db.commit()
+    db.refresh(current_doctor)
+    return {"profile_photo": photo_url, "message": "Photo updated successfully"}
+
 
 @router.put("/me", response_model=schemas.DoctorOut)
 def update_profile(

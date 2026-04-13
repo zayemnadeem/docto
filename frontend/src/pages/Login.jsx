@@ -38,7 +38,7 @@ export default function Login() {
         {/* Logo */}
         <div className="flex justify-center mb-8">
           <Link to="/">
-            <img src="/docto-logo.jpg" alt="Docto" className="h-16 md:h-20 w-auto" />
+            <img src="/doctonewlogo.jpeg" alt="Docto" className="h-16 md:h-20 w-auto" />
           </Link>
         </div>
 

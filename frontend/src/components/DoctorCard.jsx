@@ -1,16 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { API_URL } from '../contexts/AuthContext';
 
 export default function DoctorCard({ doctor }) {
   const initials = doctor.full_name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'DR';
+  const photoUrl = doctor.profile_photo
+    ? (doctor.profile_photo.startsWith('http') ? doctor.profile_photo : `${API_URL}${doctor.profile_photo}`)
+    : null;
 
   return (
     <div className="bg-white rounded-2xl border border-[#e5e7eb] shadow-sm p-6 flex flex-col gap-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group">
       {/* Header: Avatar + Name + Specialty */}
       <div className="flex items-start gap-4">
         <div className="w-14 h-14 rounded-full overflow-hidden flex-shrink-0 bg-[#f3f4f6] border border-[#e5e7eb]">
-          {doctor.profile_photo ? (
-            <img src={doctor.profile_photo} alt={doctor.full_name} className="w-full h-full object-cover" />
+          {photoUrl ? (
+            <img src={photoUrl} alt={doctor.full_name} className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-[#374151] text-lg font-semibold" style={{ fontFamily: 'Instrument Serif, serif' }}>
               {initials}

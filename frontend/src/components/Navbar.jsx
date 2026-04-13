@@ -53,7 +53,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex-shrink-0 flex items-center">
             <img
-              src="/docto-logo.jpg"
+              src="/doctonewlogo.jpeg"
               alt="Docto"
               className="h-12 md:h-14 w-auto"
               onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }}

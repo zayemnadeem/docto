@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../contexts/AuthContext';
 import DoctorCard from '../../components/DoctorCard';
-import MapView from '../../components/MapView';
+
 import StarRating from '../../components/StarRating';
 import { useNavigate } from 'react-router-dom';
 
@@ -34,27 +34,48 @@ function SkeletonCard() {
 export default function Home() {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [minRating, setMinRating] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
   // Search parameters
-  const [lat, setLat] = useState(13.0827); // Chennai
+  const [lat, setLat] = useState(13.0827); // Chennai default
   const [lng, setLng] = useState(80.2707);
   const [radius, setRadius] = useState(20);
   const [specialty, setSpecialty] = useState('');
-  const [maxFee, setMaxFee] = useState(5000);
   const [sortBy, setSortBy] = useState('distance');
+  const [locationStatus, setLocationStatus] = useState('default');
+  const [locationLabel, setLocationLabel] = useState('');
 
   const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          setLat(pos.coords.latitude);
-          setLng(pos.coords.longitude);
-        },
-        () => console.warn("Geolocation denied.")
-      );
+    if (!navigator.geolocation) {
+      setLocationStatus('denied');
+      return;
     }
+    setLocationStatus('detecting');
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        setLat(latitude);
+        setLng(longitude);
+        setLocationStatus('set');
+        // Reverse geocode to get area name
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`,
+            { headers: { 'Accept-Language': 'en' } }
+          );
+          const data = await res.json();
+          const addr = data.address || {};
+          // Skip suburb if it looks like a zone/administrative label
+          const suburb = addr.suburb && !/zone|ward|division/i.test(addr.suburb) ? addr.suburb : null;
+          const area = addr.neighbourhood || addr.quarter || suburb || addr.city_district || addr.town || addr.village || addr.city || '';
+          const city = addr.city || addr.state_district || '';
+          setLocationLabel(area ? `${area}${city && city !== area ? ', ' + city : ''}` : data.display_name?.split(',')[0] || '');
+        } catch { setLocationLabel(''); }
+      },
+      () => { setLocationStatus('denied'); setLocationLabel(''); },
+      { timeout: 8000 }
+    );
   };
 
   useEffect(() => getLocation(), []);
@@ -67,8 +88,7 @@ export default function Home() {
           params: { 
             lat, lng, radius_km: radius,
             ...(specialty && { specialty }),
-            ...(minRating > 0 && { min_rating: minRating }),
-            ...(maxFee < 5000 && { max_fee: maxFee }),
+            ...(searchQuery && { query: searchQuery }),
             ...(sortBy && { sort_by: sortBy })
           }
         });
@@ -81,7 +101,7 @@ export default function Home() {
     };
     const timer = setTimeout(() => fetchDocs(), 300);
     return () => clearTimeout(timer);
-  }, [lat, lng, radius, specialty, minRating, maxFee, sortBy]);
+  }, [lat, lng, radius, specialty, searchQuery, sortBy]);
 
   return (
     <div className="bg-white">
@@ -154,38 +174,47 @@ export default function Home() {
               <option value="fee">Lowest fee</option>
             </select>
 
-            {/* Max Fee slider */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-[#6b7280] whitespace-nowrap">Fee: ₹{maxFee === 5000 ? '5000+' : maxFee}</span>
+            {/* Search Bar */}
+            <div className="flex-grow max-w-sm">
               <input
-                id="filter-fee"
-                type="range"
-                min="100"
-                max="5000"
-                step="100"
-                value={maxFee}
-                onChange={e => setMaxFee(Number(e.target.value))}
-                className="w-28"
+                type="text"
+                placeholder="Search by name or area..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full border border-[#e5e7eb] rounded-full px-4 py-2 text-sm text-[#374151] bg-white focus:outline-none focus:ring-2 focus:ring-[#111827]"
               />
-            </div>
-
-            {/* Min Rating Stars */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-[#6b7280]">Min:</span>
-              <StarRating rating={minRating} setRating={setMinRating} readOnly={false} totalReviews={null} />
             </div>
 
             {/* Use My Location */}
             <button
               id="filter-location-btn"
               onClick={getLocation}
-              className="border border-[#e5e7eb] text-[#111827] rounded-full px-4 py-2 text-sm font-medium hover:bg-[#f8f9fb] transition flex items-center gap-1.5 ml-auto"
+              disabled={locationStatus === 'detecting'}
+              className={`rounded-full px-4 py-2 text-sm font-medium transition flex items-center gap-1.5 ml-auto border ${
+                locationStatus === 'set'
+                  ? 'border-[#10b981] text-[#10b981] bg-[#f0fdf4]'
+                  : locationStatus === 'denied'
+                  ? 'border-[#ef4444] text-[#ef4444] bg-[#fef2f2]'
+                  : locationStatus === 'detecting'
+                  ? 'border-[#f59e0b] text-[#f59e0b] bg-[#fffbeb]'
+                  : 'border-[#e5e7eb] text-[#111827] hover:bg-[#f8f9fb]'
+              }`}
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              My Location
+              {locationStatus === 'detecting' ? (
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                </svg>
+              ) : (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              )}
+              {locationStatus === 'detecting' ? 'Detecting…'
+                : locationStatus === 'set' ? `📍 ${locationLabel || 'Location set ✓'}`
+                : locationStatus === 'denied' ? 'Allow location access'
+                : 'My Location'}
             </button>
           </div>
         </div>
@@ -193,14 +222,7 @@ export default function Home() {
 
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-6 py-10">
-        {/* Map */}
-        <MapView
-          lat={lat}
-          lng={lng}
-          markers={doctors}
-          className="w-full h-[420px] mb-10"
-          onMarkerClick={(doc) => navigate(`/doctor/${doc.id}`)}
-        />
+
 
         {/* Section heading */}
         <div className="flex items-center justify-between mb-6">
@@ -232,7 +254,7 @@ export default function Home() {
             </p>
             <button
               id="clear-filters-btn"
-              onClick={() => { setSpecialty(''); setMinRating(0); setMaxFee(5000); }}
+              onClick={() => { setSpecialty(''); setSearchQuery(''); }}
               className="mt-5 border border-[#e5e7eb] text-[#111827] rounded-full px-6 py-2.5 text-sm font-medium hover:bg-[#f8f9fb] transition"
             >
               Clear Filters

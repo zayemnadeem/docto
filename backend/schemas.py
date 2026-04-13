@@ -1,8 +1,12 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 from typing import Optional, List
 from datetime import date, time, datetime
 from uuid import UUID
 from models import SpecializationEnum, SubscriptionPlanEnum, BookingStatusEnum, PaymentStatusEnum
+
+# Reusable Pydantic v2 ORM base config
+class OrmBase(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
 
 class Token(BaseModel):
     access_token: str
@@ -23,13 +27,10 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
 
-class UserOut(UserBase):
+class UserOut(OrmBase, UserBase):
     id: UUID
     is_active: bool
     created_at: datetime
-    class Config:
-        orm_mode = True
-        from_attributes = True
 
 class DoctorBase(BaseModel):
     email: EmailStr
@@ -49,7 +50,7 @@ class DoctorBase(BaseModel):
 class DoctorCreate(DoctorBase):
     password: str
 
-class DoctorOut(DoctorBase):
+class DoctorOut(OrmBase, DoctorBase):
     id: UUID
     is_verified: bool
     is_active: bool
@@ -58,9 +59,6 @@ class DoctorOut(DoctorBase):
     avg_rating: float
     total_reviews: int
     created_at: datetime
-    class Config:
-        orm_mode = True
-        from_attributes = True
 
 class DoctorUpdate(BaseModel):
     full_name: Optional[str] = None
@@ -84,14 +82,11 @@ class DoctorSlotBase(BaseModel):
 class DoctorSlotCreate(DoctorSlotBase):
     pass
 
-class DoctorSlotOut(DoctorSlotBase):
+class DoctorSlotOut(OrmBase, DoctorSlotBase):
     id: UUID
     doctor_id: UUID
     is_booked: bool
     created_at: datetime
-    class Config:
-        orm_mode = True
-        from_attributes = True
 
 class BookingBase(BaseModel):
     doctor_id: UUID
@@ -100,7 +95,7 @@ class BookingBase(BaseModel):
 class BookingCreate(BookingBase):
     pass
 
-class BookingOut(BookingBase):
+class BookingOut(OrmBase, BookingBase):
     id: UUID
     patient_id: UUID
     status: BookingStatusEnum
@@ -110,16 +105,10 @@ class BookingOut(BookingBase):
     cancellation_reason: Optional[str] = None
     cancelled_at: Optional[datetime] = None
     created_at: datetime
-    class Config:
-        orm_mode = True
-        from_attributes = True
 
 class BookingDetailOut(BookingOut):
     doctor: DoctorOut
     slot: DoctorSlotOut
-    class Config:
-        orm_mode = True
-        from_attributes = True
 
 class ReviewBase(BaseModel):
     rating: int
@@ -128,40 +117,31 @@ class ReviewBase(BaseModel):
 class ReviewCreate(ReviewBase):
     booking_id: UUID
 
-class ReviewOut(ReviewBase):
+class ReviewOut(OrmBase, ReviewBase):
     id: UUID
     patient_id: UUID
     doctor_id: UUID
     booking_id: UUID
     created_at: datetime
-    class Config:
-        orm_mode = True
-        from_attributes = True
 
-class SubscriptionOut(BaseModel):
+class SubscriptionOut(OrmBase):
     id: UUID
     doctor_id: UUID
     plan: SubscriptionPlanEnum
     amount_paid: float
     started_at: datetime
     expires_at: Optional[datetime] = None
-    class Config:
-        orm_mode = True
-        from_attributes = True
 
 class AdminCreate(BaseModel):
     email: EmailStr
     password: str
     full_name: str
 
-class AdminOut(BaseModel):
+class AdminOut(OrmBase):
     id: UUID
     email: EmailStr
     full_name: str
     created_at: datetime
-    class Config:
-        orm_mode = True
-        from_attributes = True
 
 class LoginRequest(BaseModel):
     email: EmailStr
