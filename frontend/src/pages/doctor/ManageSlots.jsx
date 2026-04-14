@@ -189,9 +189,9 @@ export default function ManageSlots() {
                           : 'bg-white border-[#e5e7eb] text-[#374151]'
                       }`}
                     >
-                      <span>{formatTime(s.start_time)} â€“ {formatTime(s.end_time)}</span>
+                      <span>{formatTime(s.start_time)} – {formatTime(s.end_time)}</span>
                       {s.is_booked ? (
-                        <span className="text-[#92400e] font-semibold">â€¢&nbsp;Booked</span>
+                        <span className="text-[#92400e] font-semibold">•&nbsp;Booked</span>
                       ) : (
                         <button
                           id={`delete-slot-${s.id}`}

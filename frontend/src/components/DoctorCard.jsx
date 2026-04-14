@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { API_URL } from '../contexts/AuthContext';
 
@@ -44,22 +44,22 @@ export default function DoctorCard({ doctor }) {
       <div className="flex flex-col gap-1.5 text-sm text-[#6b7280]">
         {/* Rating */}
         <div className="flex items-center gap-1.5">
-          <span className="text-[#f59e0b]">â˜…</span>
-          <span className="font-semibold text-[#0d2b28]">{doctor.avg_rating?.toFixed(1) || 'â€”'}</span>
+          <span className="text-[#f59e0b]">★</span>
+          <span className="font-semibold text-[#0d2b28]">{doctor.avg_rating?.toFixed(1) || '—'}</span>
           <span className="text-[#9ca3af]">({doctor.total_reviews || 0} reviews)</span>
         </div>
         {/* Distance + Clinic */}
         {doctor.distance_km !== undefined && (
           <div className="flex items-center gap-1.5">
-            <span className="text-[#9ca3af]">ðŸ“</span>
+            <span className="text-[#9ca3af]">📍</span>
             <span>{doctor.distance_km?.toFixed(1)} km away</span>
-            {doctor.clinic_name && <span className="text-[#9ca3af]">Â· {doctor.clinic_name}</span>}
+            {doctor.clinic_name && <span className="text-[#9ca3af]">· {doctor.clinic_name}</span>}
           </div>
         )}
         {/* Fee */}
         <div className="flex items-center gap-1.5">
-          <span className="text-[#9ca3af]">ðŸ’°</span>
-          <span className="font-medium text-[#0d2b28]">â‚¹{doctor.consultation_fee}</span>
+          <span className="text-[#9ca3af]">💰</span>
+          <span className="font-medium text-[#0d2b28]">₹{doctor.consultation_fee}</span>
           <span className="text-[#9ca3af]">consultation</span>
         </div>
       </div>

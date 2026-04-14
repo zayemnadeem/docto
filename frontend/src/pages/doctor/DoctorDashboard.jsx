@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL, useAuth } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
@@ -43,10 +43,10 @@ export default function DoctorDashboard() {
   });
 
   const stats = [
-    { label: 'Bookings today', value: todayAppts.length, icon: 'ðŸ“…' },
-    { label: 'Total earned', value: `â‚¹${earnings?.total_earned || 0}`, icon: 'ðŸ’°' },
-    { label: 'Rating', value: `${user?.avg_rating?.toFixed(1) || 'â€”'} â˜…`, icon: 'â­' },
-    { label: 'Open slots', value: openSlotsCount, icon: 'ðŸ•' },
+    { label: 'Bookings today', value: todayAppts.length, icon: '📅' },
+    { label: 'Total earned', value: `₹${earnings?.total_earned || 0}`, icon: '💰' },
+    { label: 'Rating', value: `${user?.avg_rating?.toFixed(1) || '—'} ★`, icon: '⭐' },
+    { label: 'Open slots', value: openSlotsCount, icon: '🕒' },
   ];
 
   return (
@@ -84,7 +84,7 @@ export default function DoctorDashboard() {
                 <div className="bg-[#f8f9fb] rounded-2xl border border-[#e5e7eb] p-8 text-center">
                   <p className="text-[#9ca3af] text-sm">No appointments scheduled for today.</p>
                   <Link to="/doctor/slots" className="mt-3 inline-block text-sm text-[#1a9e8f] underline underline-offset-2">
-                    Manage your slots â†’
+                    Manage your slots →
                   </Link>
                 </div>
               ) : (
@@ -96,7 +96,7 @@ export default function DoctorDashboard() {
                       </div>
                       <div>
                         <p className="font-medium text-[#0d2b28] text-sm">{a.patient?.full_name}</p>
-                        <p className="text-xs text-[#9ca3af]">{a.slot?.start_time?.slice(0, 5)} â€“ {a.slot?.end_time?.slice(0, 5)}</p>
+                        <p className="text-xs text-[#9ca3af]">{a.slot?.start_time?.slice(0, 5)} – {a.slot?.end_time?.slice(0, 5)}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">

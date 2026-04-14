@@ -157,7 +157,7 @@ export default function BookingConfirm() {
             <div className="flex justify-between items-center text-sm">
               <span className="text-[#6b7280]">Time</span>
               <span className="font-medium text-[#0d2b28]">
-                {formatTime(selectedSlot.start_time)} â€“ {formatTime(selectedSlot.end_time)}
+                {formatTime(selectedSlot.start_time)} – {formatTime(selectedSlot.end_time)}
               </span>
             </div>
           </div>
@@ -195,7 +195,7 @@ export default function BookingConfirm() {
               : 'bg-[#1a9e8f] text-white hover:bg-[#158577]'
           }`}
         >
-          {loading ? 'Processingâ€¦' : `Proceed to Pay â‚¹${advance}`}
+          {loading ? 'Processing…' : `Proceed to Pay ₹${advance}`}
         </button>
       </div>
     </div>

@@ -77,7 +77,7 @@ export default function Login() {
                 required
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                placeholder="••••••••"
                 className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white text-[#0d2b28]"
               />
             </div>
@@ -92,7 +92,7 @@ export default function Login() {
                   : 'bg-[#1a9e8f] text-white hover:bg-[#158577]'
               }`}
             >
-              {loading ? 'Signing inâ€¦' : 'Login'}
+              {loading ? 'Signing in…' : 'Login'}
             </button>
           </form>
 

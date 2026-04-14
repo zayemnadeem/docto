@@ -119,7 +119,7 @@ export default function Register() {
                   <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold transition-all ${
                     s === step ? 'bg-[#1a9e8f] text-white' : s < step ? 'bg-[#10b981] text-white' : 'bg-[#f3f4f6] text-[#9ca3af]'
                   }`}>
-                    {s < step ? 'âœ“' : s}
+                    {s < step ? '✓' : s}
                   </div>
                   {s < 3 && <div className={`w-8 h-0.5 ${s < step ? 'bg-[#10b981]' : 'bg-[#f3f4f6]'}`} />}
                 </div>
@@ -154,7 +154,7 @@ export default function Register() {
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-[#6b7280] uppercase tracking-wide mb-2">Password</label>
-                  <input id="register-password" type="password" required value={password} onChange={e => setPassword(e.target.value)} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white text-[#0d2b28]" />
+                  <input id="register-password" type="password" required value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white text-[#0d2b28]" />
                 </div>
               </>
             )}
@@ -179,7 +179,7 @@ export default function Register() {
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-[#6b7280] uppercase tracking-wide mb-2">Bio</label>
-                  <textarea id="register-bio" value={bio} onChange={e => setBio(e.target.value)} placeholder="Tell patients about yourselfâ€¦" rows={3} className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white text-[#0d2b28] resize-none" />
+                  <textarea id="register-bio" value={bio} onChange={e => setBio(e.target.value)} placeholder="Tell patients about yourself…" rows={3} className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white text-[#0d2b28] resize-none" />
                 </div>
               </>
             )}
@@ -196,7 +196,7 @@ export default function Register() {
                   <input id="register-clinic-address" type="text" value={clinicAddress} onChange={e => setClinicAddress(e.target.value)} placeholder="123, Anna Salai, Chennai" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white text-[#0d2b28]" />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#6b7280] uppercase tracking-wide mb-2">Consultation Fee (â‚¹)</label>
+                  <label className="block text-xs font-medium text-[#6b7280] uppercase tracking-wide mb-2">Consultation Fee (₹)</label>
                   <input id="register-fee" type="number" min="0" value={consultationFee} onChange={e => setConsultationFee(e.target.value)} placeholder="500" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white text-[#0d2b28]" />
                 </div>
               </>
@@ -221,7 +221,7 @@ export default function Register() {
                   loading ? 'bg-[#f3f4f6] text-[#9ca3af] cursor-not-allowed' : 'bg-[#1a9e8f] text-white hover:bg-[#158577]'
                 }`}
               >
-                {loading ? 'Creating accountâ€¦' : step < maxSteps ? `Next â€” Step ${step + 1} of ${maxSteps}` : 'Create Account'}
+                {loading ? 'Creating account…' : step < maxSteps ? `Next — Step ${step + 1} of ${maxSteps}` : 'Create Account'}
               </button>
             </div>
           </form>

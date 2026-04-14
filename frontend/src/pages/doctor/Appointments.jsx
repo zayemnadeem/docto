@@ -112,7 +112,7 @@ export default function Appointments() {
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-[#374151]">
-                    {formatDate(a.slot?.date)} Â· {formatTime(a.slot?.start_time)}
+                    {formatDate(a.slot?.date)} · {formatTime(a.slot?.start_time)}
                   </td>
                   <td className="px-6 py-4">
                     <span className={`text-xs font-medium px-3 py-1 rounded-full capitalize ${STATUS_STYLES[a.booking.status] || STATUS_STYLES.confirmed}`}>
@@ -147,7 +147,7 @@ export default function Appointments() {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="font-medium text-[#0d2b28] text-sm">{a.patient?.full_name}</p>
-                  <p className="text-xs text-[#9ca3af] mt-1">{formatDate(a.slot?.date)} Â· {formatTime(a.slot?.start_time)}</p>
+                  <p className="text-xs text-[#9ca3af] mt-1">{formatDate(a.slot?.date)} · {formatTime(a.slot?.start_time)}</p>
                 </div>
                 <span className={`text-xs font-medium px-3 py-1 rounded-full capitalize ${STATUS_STYLES[a.booking.status] || STATUS_STYLES.confirmed}`}>
                   {a.booking.status}

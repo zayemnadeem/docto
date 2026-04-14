@@ -62,7 +62,7 @@ export default function SubscriptionModal({ onClose, onSubscribe }) {
         amount: amount * 100,
         currency: 'INR',
         name: 'Docto',
-        description: `${plan.name} Subscription â€” â‚¹${plan.price}`,
+        description: `${plan.name} Subscription — ₹${plan.price}`,
         order_id,
         handler: async (response) => {
           try {
@@ -183,7 +183,7 @@ export default function SubscriptionModal({ onClose, onSubscribe }) {
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                     </svg>
                   )}
-                  {isLoading ? 'Opening paymentâ€¦' : `Subscribe for â‚¹${plan.price}`}
+                  {isLoading ? 'Opening payment…' : `Subscribe for ₹${plan.price}`}
                 </button>
               </div>
             );
