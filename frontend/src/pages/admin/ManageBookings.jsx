@@ -19,7 +19,7 @@ export default function ManageBookings() {
       setLoading(true);
       try {
         const res = await axios.get(`${API_URL}/admin/bookings`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+          headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
         });
         setBookings(res.data.data || []);
       } catch (e) { console.error(e); } finally { setLoading(false); }

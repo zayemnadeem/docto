@@ -19,12 +19,29 @@ def create_booking(booking: schemas.BookingCreate, db: Session = Depends(get_db)
         raise HTTPException(status_code=404, detail="Doctor not found")
     
     slot = db.query(DoctorSlot).filter(DoctorSlot.id == booking.slot_id).with_for_update().first()
-    if not slot or slot.is_booked:
+    if not slot:
         db.rollback()
         raise HTTPException(status_code=400, detail="Slot is not available")
+        
+    if not booking.is_emergency:
+        if slot.is_booked:
+            db.rollback()
+            raise HTTPException(status_code=400, detail="Slot is not available")
+    else:
+        existing_emergency = db.query(Booking).filter(
+            Booking.slot_id == slot.id, 
+            Booking.is_emergency == True, 
+            Booking.status.in_(["pending", "confirmed"])
+        ).first()
+        if existing_emergency:
+            db.rollback()
+            raise HTTPException(status_code=400, detail="Emergency slot already occupied by another emergency")
     
     advance_pct = float(os.getenv("ADVANCE_PERCENT", "30"))
     fee = float(doctor.consultation_fee) if doctor.consultation_fee else 0
+    if booking.is_emergency:
+        fee = fee * 1.25
+        
     advance = fee * (advance_pct / 100)
     
     new_booking = Booking(
@@ -33,7 +50,8 @@ def create_booking(booking: schemas.BookingCreate, db: Session = Depends(get_db)
         slot_id=slot.id,
         status="pending",
         advance_amount=advance,
-        payment_status="pending"
+        payment_status="pending",
+        is_emergency=booking.is_emergency
     )
     db.add(new_booking)
     db.commit()
@@ -85,9 +103,20 @@ def cancel_booking(id: UUID, db: Session = Depends(get_db), current_patient: Use
     hours_until = (slot_datetime - datetime.now()).total_seconds() / 3600
     
     if hours_until < 0:
-        raise HTTPException(status_code=400, detail="Cannot cancel an appointment that has already passed.")
-    elif hours_until <= 6:
-        raise HTTPException(status_code=400, detail="Must cancel at least 6 hours in advance.")
+        booking.status = "no_show"
+        booking.payment_status = "forfeited"
+        db.commit()
+        raise HTTPException(status_code=400, detail="Appointment missed and advance payment cannot be refunded.")
+        
+    from datetime import timezone
+    now_utc = datetime.now(timezone.utc)
+    created_at_utc = booking.created_at
+    if created_at_utc.tzinfo is None:
+        created_at_utc = created_at_utc.replace(tzinfo=timezone.utc)
+        
+    hours_since_booking = (now_utc - created_at_utc).total_seconds() / 3600
+    if hours_since_booking > 6:
+        raise HTTPException(status_code=400, detail="Appointments can only be cancelled within exactly 6 hours of making the initial booking.")
         
     client = razorpay.Client(auth=(os.getenv("RAZORPAY_KEY_ID", ""), os.getenv("RAZORPAY_KEY_SECRET", "")))
     if booking.payment_id:

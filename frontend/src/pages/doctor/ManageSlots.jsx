@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../contexts/AuthContext';
 
@@ -7,12 +7,13 @@ export default function ManageSlots() {
   const [date, setDate] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
+  const [isOnline, setIsOnline] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
 
   const fetchSlots = async () => {
     try {
       const res = await axios.get(`${API_URL}/doctors/me/slots`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
       });
       setSlots(Array.isArray(res.data) ? res.data : (res.data?.data || []));
     } catch (e) {
@@ -25,20 +26,20 @@ export default function ManageSlots() {
   const addSlot = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${API_URL}/doctors/me/slots`, { date, start_time: startTime, end_time: endTime }, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      await axios.post(`${API_URL}/doctors/me/slots`, { date, start_time: startTime, end_time: endTime, is_online: isOnline }, {
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
       });
       fetchSlots();
-      setDate(''); setStartTime(''); setEndTime('');
+      setDate(''); setStartTime(''); setEndTime(''); setIsOnline(false);
     } catch (e) {
-      alert("Error adding slot");
+      alert(e.response?.data?.detail || "Error adding slot");
     }
   };
 
   const deleteSlot = async (id) => {
     try {
       await axios.delete(`${API_URL}/doctors/me/slots/${id}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
       });
       fetchSlots();
     } catch (e) {
@@ -78,48 +79,59 @@ export default function ManageSlots() {
         {/* Add Slot Form */}
         <div className="bg-white rounded-2xl border border-[#e5e7eb] shadow-sm p-6 mb-8">
           <h2 className="text-lg font-medium text-[#0d2b28] mb-4">Add a Slot</h2>
-          <form onSubmit={addSlot} className="flex flex-wrap gap-3 items-end">
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-[#6b7280] font-medium">Date</label>
-              <input
-                id="slot-date-input"
-                type="date"
-                required
-                min={new Date().toISOString().split('T')[0]}
-                value={date}
-                onChange={e => setDate(e.target.value)}
-                className="border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm text-[#0d2b28] focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white"
-              />
+          <form onSubmit={addSlot} className="flex flex-col gap-6">
+            <div className="flex items-center gap-2 bg-[#f8f9fb] p-1.5 rounded-xl self-start border border-[#e5e7eb]">
+              <button type="button" onClick={() => setIsOnline(false)} className={`px-5 py-2 text-sm font-medium rounded-lg transition ${!isOnline ? 'bg-white shadow-sm text-[#0d2b28] border border-[#e5e7eb]' : 'text-[#6b7280] hover:text-[#374151]'}`}>
+                At Clinic
+              </button>
+              <button type="button" onClick={() => setIsOnline(true)} className={`px-5 py-2 text-sm font-medium rounded-lg transition ${isOnline ? 'bg-white shadow-sm text-[#0d2b28] border border-[#e5e7eb]' : 'text-[#6b7280] hover:text-[#374151]'}`}>
+                Online Video
+              </button>
             </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-[#6b7280] font-medium">Start Time</label>
-              <input
-                id="slot-start-input"
-                type="time"
-                required
-                value={startTime}
-                onChange={e => setStartTime(e.target.value)}
-                className="border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm text-[#0d2b28] focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white"
-              />
+            
+            <div className="flex flex-wrap gap-4 items-end">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs text-[#6b7280] font-medium uppercase tracking-wide">Date</label>
+                <input
+                  id="slot-date-input"
+                  type="date"
+                  required
+                  min={new Date().toISOString().split('T')[0]}
+                  value={date}
+                  onChange={e => setDate(e.target.value)}
+                  className="border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm text-[#0d2b28] focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white w-40"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs text-[#6b7280] font-medium uppercase tracking-wide">Start Time</label>
+                <input
+                  id="slot-start-input"
+                  type="time"
+                  required
+                  value={startTime}
+                  onChange={e => setStartTime(e.target.value)}
+                  className="border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm text-[#0d2b28] focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white w-32"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs text-[#6b7280] font-medium uppercase tracking-wide">End Time</label>
+                <input
+                  id="slot-end-input"
+                  type="time"
+                  required
+                  value={endTime}
+                  onChange={e => setEndTime(e.target.value)}
+                  className="border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm text-[#0d2b28] focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white w-32"
+                />
+              </div>
+              <button
+                id="add-slot-btn"
+                type="submit"
+                className="bg-[#1a9e8f] text-white rounded-xl px-8 py-3 text-sm font-medium hover:bg-[#158577] transition ml-2 shadow-sm"
+              >
+                Create Slot
+              </button>
             </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-[#6b7280] font-medium">End Time</label>
-              <input
-                id="slot-end-input"
-                type="time"
-                required
-                value={endTime}
-                onChange={e => setEndTime(e.target.value)}
-                className="border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm text-[#0d2b28] focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white"
-              />
-            </div>
-            <button
-              id="add-slot-btn"
-              type="submit"
-              className="bg-[#1a9e8f] text-white rounded-full px-6 py-3 text-sm font-medium hover:bg-[#158577] transition"
-            >
-              Add Slot
-            </button>
           </form>
         </div>
 
@@ -179,31 +191,51 @@ export default function ManageSlots() {
             ) : (
               <div>
                 <h2 className="text-lg font-medium text-[#0d2b28] mb-4">{formatDate(selectedDate)}</h2>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-3">
                   {daySlots.map(s => (
                     <div
                       key={s.id}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-full text-xs font-medium border ${
+                      className={`flex flex-col gap-1.5 px-4 py-2.5 rounded-xl border min-w-[145px] transition-all shadow-sm ${
                         s.is_booked
-                          ? 'bg-[#fef3c7] border-[#fde68a] text-[#92400e]'
-                          : 'bg-white border-[#e5e7eb] text-[#374151]'
+                          ? 'bg-[#fef3c7] border-[#fcd34d]'
+                          : s.is_online
+                            ? 'bg-[#eff6ff] border-[#bfdbfe]'
+                            : 'bg-white border-[#e5e7eb]'
                       }`}
                     >
-                      <span>{formatTime(s.start_time)} – {formatTime(s.end_time)}</span>
-                      {s.is_booked ? (
-                        <span className="text-[#92400e] font-semibold">•&nbsp;Booked</span>
-                      ) : (
-                        <button
-                          id={`delete-slot-${s.id}`}
-                          onClick={() => deleteSlot(s.id)}
-                          className="text-[#9ca3af] hover:text-[#ef4444] transition ml-1"
-                          title="Delete slot"
-                        >
-                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        </button>
-                      )}
+                      <div className="flex items-center justify-between gap-3">
+                        <span className={`text-sm font-bold tracking-wide ${s.is_booked ? 'text-[#92400e]' : s.is_online ? 'text-[#1e40af]' : 'text-[#374151]'}`}>
+                          {formatTime(s.start_time)}
+                        </span>
+                        {!s.is_booked && (
+                          <button
+                            id={`delete-slot-${s.id}`}
+                            onClick={() => deleteSlot(s.id)}
+                            className={`${s.is_online ? 'text-[#93c5fd] hover:text-[#3b82f6]' : 'text-[#d1d5db] hover:text-[#ef4444]'} transition`}
+                            title="Delete slot"
+                          >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
+                      <div className="flex items-center justify-between mt-0.5">
+                        {s.is_online ? (
+                          <span className={`text-[10px] uppercase font-bold tracking-wider flex items-center gap-1 ${s.is_booked ? 'text-[#b45309]' : 'text-[#3b82f6]'}`}>
+                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                            Video
+                          </span>
+                        ) : (
+                          <span className={`text-[10px] uppercase font-bold tracking-wider flex items-center gap-1 ${s.is_booked ? 'text-[#b45309]' : 'text-[#9ca3af]'}`}>
+                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                            Clinic
+                          </span>
+                        )}
+                        {s.is_booked && (
+                          <span className="text-[10px] text-[#d97706] font-bold uppercase tracking-wider ml-1">Booked</span>
+                        )}
+                      </div>
                     </div>
                   ))}
                   {daySlots.length === 0 && (

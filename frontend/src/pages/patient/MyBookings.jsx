@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
@@ -9,9 +9,51 @@ const STATUS_STYLES = {
   pending: 'bg-[#fef3c7] text-[#92400e]',
   cancelled: 'bg-[#fee2e2] text-[#991b1b]',
   completed: 'bg-[#e6f7f5] text-[#1a9e8f]',
+  no_show: 'bg-[#fee2e2] text-[#991b1b]',
 };
 
-const TABS = ['upcoming', 'completed', 'cancelled'];
+const TABS = ['upcoming', 'completed', 'cancelled', 'missed'];
+
+const CancelCountdown = ({ booking, slot, status }) => {
+  const [timeLeft, setTimeLeft] = useState('');
+
+  useEffect(() => {
+    if (!booking || !slot || status !== 'confirmed') return;
+    const calculate = () => {
+      const bookedAt = new Date(booking.created_at);
+      const cancelDeadline = new Date(bookedAt.getTime() + 6 * 3600 * 1000);
+      const slotTime = new Date(`${slot.date}T${slot.start_time}`);
+      const now = new Date();
+      
+      if (now.getTime() > slotTime.getTime() || now.getTime() > cancelDeadline.getTime()) {
+        setTimeLeft('Closed');
+        return;
+      }
+      
+      const diffMs = cancelDeadline.getTime() - now.getTime();
+      const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+      const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+      
+      setTimeLeft(`${diffHrs}h ${diffMins}m left`);
+    };
+    
+    calculate();
+    const interval = setInterval(calculate, 60000);
+    return () => clearInterval(interval);
+  }, [booking, slot, status]);
+
+  if (status !== 'confirmed') return null;
+  if (!timeLeft) return null;
+  
+  return (
+    <div className={`mt-3 text-xs font-medium px-2.5 py-1.5 inline-flex items-center gap-1.5 rounded-lg border ${timeLeft === 'Closed' ? 'bg-[#fee2e2] text-[#991b1b] border-[#fecaca]' : 'bg-[#fffbeb] text-[#b45309] border-[#fde68a]'}`}>
+      <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      {timeLeft === 'Closed' ? 'Cancellation window closed' : `Cancel window closes in: ${timeLeft}`}
+    </div>
+  );
+};
 
 export default function MyBookings() {
   const [bookings, setBookings] = useState([]);
@@ -29,7 +71,7 @@ export default function MyBookings() {
   const fetchBookings = async () => {
     try {
       const res = await axios.get(`${API_URL}/patients/me/bookings`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
       });
       setBookings(res.data.data || []);
     } catch (err) {
@@ -47,11 +89,12 @@ export default function MyBookings() {
     if (!window.confirm('Are you sure you want to cancel this appointment?')) return;
     try {
       await axios.post(`${API_URL}/bookings/${bookingId}/cancel`, {}, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
       });
       fetchBookings();
     } catch (err) {
       alert(err.response?.data?.detail || 'Failed to cancel booking.');
+      fetchBookings();
     }
   };
 
@@ -59,7 +102,7 @@ export default function MyBookings() {
     if (!window.confirm('Remove this incomplete booking from your list?')) return;
     try {
       await axios.delete(`${API_URL}/bookings/${bookingId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
       });
       fetchBookings();
     } catch (err) {
@@ -71,6 +114,7 @@ export default function MyBookings() {
     if (tab === 'upcoming') return bookings.filter(b => ['confirmed', 'pending'].includes(b.booking.status));
     if (tab === 'completed') return bookings.filter(b => b.booking.status === 'completed');
     if (tab === 'cancelled') return bookings.filter(b => b.booking.status === 'cancelled');
+    if (tab === 'missed') return bookings.filter(b => b.booking.status === 'no_show');
     return bookings;
   };
 
@@ -103,7 +147,7 @@ export default function MyBookings() {
       await axios.post(
         `${API_URL}/reviews`,
         { booking_id: bookingId, rating: reviewRating, review_text: reviewText.trim() },
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+        { headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` } }
       );
       setReviewedIds(prev => new Set([...prev, bookingId]));
       setReviewOpen(null);
@@ -167,7 +211,13 @@ export default function MyBookings() {
           </div>
         ) : (
           <div className="space-y-4">
-            {filtered.map(b => (
+            {filtered.map(b => {
+              const baseFee = b.doctor?.consultation_fee || 0;
+              const total = b.booking.is_emergency ? baseFee * 1.25 : baseFee;
+              const finalFee = b.booking.delay_minutes > 0 ? total * 0.9 : total;
+              const balance = Math.max(0, finalFee - b.booking.advance_amount);
+              
+              return (
               <div key={b.booking.id} className="bg-white rounded-2xl border border-[#e5e7eb] shadow-sm p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-grow">
@@ -185,21 +235,65 @@ export default function MyBookings() {
                       <span>&middot;</span>
                       <span>{formatTime(b.slot?.start_time)}</span>
                       <span>&middot;</span>
-                      <span className="text-[#0d2b28] font-medium">&#8377;{b.booking.advance_amount} {b.booking.payment_status === 'paid' ? 'paid' : 'to pay'}</span>
+                      {b.slot?.is_online ? (
+                        <span className="text-[#1d4ed8] font-medium flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                          Online Video
+                        </span>
+                      ) : (
+                        <span className="line-clamp-1 max-w-[200px]" title={b.doctor?.clinic_address || b.doctor?.clinic_name}>
+                          {b.doctor?.clinic_address || b.doctor?.clinic_name || 'Clinic Visit'}
+                        </span>
+                      )}
                     </div>
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm mt-1">
+                      <span className="text-[#0d2b28] font-medium">
+                        Advance: &#8377;{b.booking.advance_amount} 
+                        {b.booking.payment_status === 'paid' ? ' paid' : 
+                         b.booking.payment_status === 'refunded' ? ' refunded' : 
+                         b.booking.payment_status === 'forfeited' ? ' forfeited' : ' to pay'}
+                      </span>
+                      <span className="text-[#6b7280]">&middot;</span>
+                      <span className="text-[#6b7280] font-medium">Balance at clinic: &#8377;{balance.toFixed(2)}</span>
+                      {b.booking.is_emergency && <span className="text-[10px] bg-[#fee2e2] text-[#991b1b] px-2 py-0.5 rounded font-bold uppercase ml-1 shadow-sm">Emergency</span>}
+                    </div>
+                    {b.booking.delay_minutes > 0 && (
+                      <div className="mt-3 text-xs text-[#92400e] font-medium bg-[#fef3c7] px-3 py-2 rounded-lg inline-block border border-[#fde68a]">
+                        Delayed by {b.booking.delay_minutes} mins (10% off final fee)
+                      </div>
+                    )}
+                    {b.booking.status === 'no_show' && (
+                      <div className="mt-3 text-xs text-[#ef4444] font-medium bg-[#fef2f2] px-3 py-2 rounded-lg inline-block border border-[#fecaca]">
+                        Advance amount of &#8377;{b.booking.advance_amount} cannot be refunded.
+                      </div>
+                    )}
+                    <CancelCountdown booking={b.booking} slot={b.slot} status={b.booking.status} />
                   </div>
                   <div className="flex flex-col items-end gap-2">
                     <span className={`text-xs font-medium px-3 py-1 rounded-full capitalize ${STATUS_STYLES[b.booking.status] || STATUS_STYLES.pending}`}>
-                      {b.booking.status}
+                      {b.booking.status === 'no_show' ? 'missed' : b.booking.status}
                     </span>
                     {b.booking.status === 'confirmed' && (
-                      <button
-                        id={`cancel-booking-${b.booking.id}`}
-                        onClick={() => handleCancel(b.booking.id)}
-                        className="border border-[#fecaca] text-[#ef4444] rounded-full px-4 py-1.5 text-xs font-medium hover:bg-[#fef2f2] transition"
-                      >
-                        Cancel
-                      </button>
+                      <>
+                        <button
+                          id={`cancel-booking-${b.booking.id}`}
+                          onClick={() => handleCancel(b.booking.id)}
+                          className="border border-[#fecaca] text-[#ef4444] rounded-full px-4 py-1.5 text-xs font-medium hover:bg-[#fef2f2] transition w-full"
+                        >
+                          Cancel
+                        </button>
+                        {b.slot?.is_online && (
+                          <a
+                            href={`https://meet.google.com/new`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="bg-[#2563eb] text-white rounded-full px-4 py-1.5 text-xs font-medium hover:bg-[#1d4ed8] transition flex items-center justify-center gap-1.5 shadow-sm mt-1 w-full"
+                          >
+                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                            Join Call
+                          </a>
+                        )}
+                      </>
                     )}
                     {b.booking.status === 'pending' && (
                       <button
@@ -271,7 +365,7 @@ export default function MyBookings() {
                   </div>
                 )}
               </div>
-            ))}
+            )})}
           </div>
         )}
       </div>

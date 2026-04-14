@@ -1,6 +1,6 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { API_URL } from '../contexts/AuthContext';
+import { API_URL, useAuth } from '../contexts/AuthContext';
 
 const PLANS = [
   {
@@ -35,6 +35,7 @@ const PLANS = [
 ];
 
 export default function SubscriptionModal({ onClose, onSubscribe }) {
+  const { setUser } = useAuth();
   const [loadingPlan, setLoadingPlan] = useState(null); // plan id being processed
   const [error, setError] = useState('');
 
@@ -52,7 +53,7 @@ export default function SubscriptionModal({ onClose, onSubscribe }) {
       const res = await axios.post(
         `${API_URL}/subscriptions/create-order?plan_name=${plan.id}`,
         {},
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+        { headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` } }
       );
       const { order_id, amount } = res.data;
 
@@ -70,8 +71,11 @@ export default function SubscriptionModal({ onClose, onSubscribe }) {
             await axios.post(
               `${API_URL}/subscriptions/confirm?plan_name=${plan.id}&razorpay_payment_id=${response.razorpay_payment_id}&razorpay_signature=${response.razorpay_signature}&razorpay_order_id=${response.razorpay_order_id}`,
               {},
-              { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+              { headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` } }
             );
+            if (setUser) {
+              setUser(prev => ({ ...prev, subscription_plan: plan.id }));
+            }
             if (onSubscribe) onSubscribe(plan);
             onClose();
           } catch (err) {

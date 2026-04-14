@@ -11,7 +11,7 @@ export default function AdminDashboard() {
     const fetchStats = async () => {
       try {
         const res = await axios.get(`${API_URL}/admin/stats`, {
-           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+           headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
         });
         setStats(res.data.data);
       } catch (e) { console.error(e); }
@@ -19,7 +19,7 @@ export default function AdminDashboard() {
     const fetchPending = async () => {
       try {
         const res = await axios.get(`${API_URL}/admin/doctors/pending`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+          headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
         });
         setPendingDoctors(res.data.data || []);
       } catch (e) { console.error(e); }
@@ -31,7 +31,7 @@ export default function AdminDashboard() {
   const approve = async (id) => {
     try {
       await axios.patch(`${API_URL}/admin/doctors/${id}/verify`, {}, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
       });
       setPendingDoctors(prev => prev.filter(d => d.id !== id));
     } catch (e) { alert("Error approving doctor"); }
@@ -40,7 +40,7 @@ export default function AdminDashboard() {
   const reject = async (id) => {
     try {
       await axios.patch(`${API_URL}/admin/doctors/${id}/reject`, {}, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
       });
       setPendingDoctors(prev => prev.filter(d => d.id !== id));
     } catch (e) { alert("Error rejecting doctor"); }

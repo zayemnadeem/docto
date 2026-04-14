@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../contexts/AuthContext';
 import DoctorCard from '../../components/DoctorCard';
@@ -45,6 +45,8 @@ export default function Home() {
   const [sortBy, setSortBy] = useState('distance');
   const [locationStatus, setLocationStatus] = useState('default');
   const [locationLabel, setLocationLabel] = useState('');
+  const [isOnline, setIsOnline] = useState(false);
+  const [isEmergency, setIsEmergency] = useState(false);
 
   const getLocation = () => {
     if (!navigator.geolocation) {
@@ -89,7 +91,9 @@ export default function Home() {
             lat, lng, radius_km: radius,
             ...(specialty && { specialty }),
             ...(searchQuery && { query: searchQuery }),
-            ...(sortBy && { sort_by: sortBy })
+            ...(sortBy && { sort_by: sortBy }),
+            offers_online: isOnline,
+            emergency_available: isEmergency
           }
         });
         setDoctors(res.data.data);
@@ -101,7 +105,7 @@ export default function Home() {
     };
     const timer = setTimeout(() => fetchDocs(), 300);
     return () => clearTimeout(timer);
-  }, [lat, lng, radius, specialty, searchQuery, sortBy]);
+  }, [lat, lng, radius, specialty, searchQuery, sortBy, isOnline, isEmergency]);
 
   return (
     <div className="bg-white">
@@ -173,6 +177,37 @@ export default function Home() {
               <option value="experience">Most experienced</option>
               <option value="fee">Lowest fee</option>
             </select>
+
+            {/* Hybrid/Emergency Toggles */}
+            <div className="flex items-center gap-2 border-l border-[#e5e7eb] pl-3 h-8 my-auto">
+              <button
+                onClick={() => setIsOnline(!isOnline)}
+                className={`text-xs font-semibold px-4 py-1.5 rounded-full transition flex items-center gap-1.5 ${
+                  isOnline 
+                  ? 'bg-[#e6f7f5] text-[#1a9e8f] border border-[#1a9e8f]' 
+                  : 'text-[#6b7280] border border-[#e5e7eb] hover:border-[#1a9e8f] hover:text-[#1a9e8f]'
+                }`}
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                Video Consult
+              </button>
+              
+              <button
+                onClick={() => setIsEmergency(!isEmergency)}
+                className={`text-xs font-semibold px-4 py-1.5 rounded-full transition flex items-center gap-1.5 ${
+                  isEmergency 
+                  ? 'bg-red-50 text-red-600 border border-red-200' 
+                  : 'text-[#6b7280] border border-[#e5e7eb] hover:border-red-400 hover:text-red-500'
+                }`}
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                Emergency
+              </button>
+            </div>
 
             {/* Search Bar */}
             <div className="flex-grow max-w-sm">
@@ -254,7 +289,7 @@ export default function Home() {
             </p>
             <button
               id="clear-filters-btn"
-              onClick={() => { setSpecialty(''); setSearchQuery(''); }}
+              onClick={() => { setSpecialty(''); setSearchQuery(''); setIsOnline(false); setIsEmergency(false); }}
               className="mt-5 border border-[#c8e8e5] text-[#1a9e8f] rounded-full px-6 py-2.5 text-sm font-medium hover:bg-[#e6f7f5] transition"
             >
               Clear Filters

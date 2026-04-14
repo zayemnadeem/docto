@@ -12,7 +12,7 @@ export default function ManageUsers() {
       setLoading(true);
       try {
         const res = await axios.get(`${API_URL}/admin/users`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+          headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
         });
         setUsers(res.data.data || []);
       } catch (e) { console.error(e); } finally { setLoading(false); }

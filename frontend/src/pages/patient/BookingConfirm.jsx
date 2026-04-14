@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { API_URL, useAuth } from '../../contexts/AuthContext';
@@ -7,7 +7,7 @@ export default function BookingConfirm() {
   const { id } = useParams(); // Slot ID
   const navigate = useNavigate();
   const location = useLocation();
-  const { doctor, selectedSlot } = location.state || {}; // Passed from DoctorProfile
+  const { doctor, selectedSlot, isEmergency } = location.state || {}; // Passed from DoctorProfile
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -38,8 +38,8 @@ export default function BookingConfirm() {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.post(`${API_URL}/bookings`, { doctor_id: doctor.id, slot_id: selectedSlot.id }, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      const res = await axios.post(`${API_URL}/bookings`, { doctor_id: doctor.id, slot_id: selectedSlot.id, is_emergency: isEmergency || false }, {
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
       });
       
       const order = res.data;
@@ -59,7 +59,7 @@ export default function BookingConfirm() {
                 razorpay_signature: response.razorpay_signature,
                 razorpay_order_id: response.razorpay_order_id
               },
-              headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+              headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
             });
             alert("Booking Confirmed!");
             navigate('/patient/bookings');
@@ -84,7 +84,8 @@ export default function BookingConfirm() {
     }
   };
 
-  const fee = doctor.consultation_fee;
+  const base_fee = doctor.consultation_fee || 0;
+  const fee = isEmergency ? Math.round(base_fee * 1.25) : base_fee;
   const advance = Math.round(fee * 0.3);
   const balance = fee - advance;
 
@@ -162,11 +163,31 @@ export default function BookingConfirm() {
             </div>
           </div>
 
+          {/* Location */}
+          <div className="py-4 border-b border-[#e5e7eb] space-y-2">
+            <div className="flex justify-between items-start text-sm">
+              <span className="text-[#6b7280]">Location</span>
+              {selectedSlot.is_online ? (
+                <span className="font-medium text-[#1e40af] flex items-center gap-1.5 bg-[#eff6ff] px-2.5 py-1 rounded-md border border-[#bfdbfe]">
+                  <svg className="w-3.5 h-3.5 text-[#3b82f6]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                  Online Video
+                </span>
+              ) : (
+                <span className="font-medium text-[#0d2b28] text-right line-clamp-2 max-w-[200px]">
+                  {doctor.clinic_address || doctor.clinic_name || 'Clinic Visit'}
+                </span>
+              )}
+            </div>
+          </div>
+
           {/* Fee Breakdown */}
           <div className="pt-5 space-y-3">
             <p className="text-xs text-[#9ca3af] font-medium uppercase tracking-wide mb-3">Fee Breakdown</p>
-            <div className="flex justify-between text-sm">
-              <span className="text-[#6b7280]">Consultation fee</span>
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-[#6b7280]">
+                Consultation fee
+                {isEmergency && <span className="text-xs bg-[#fee2e2] text-[#991b1b] px-2 py-0.5 rounded-md ml-2 font-medium shadow-sm">Emergency (+25%)</span>}
+              </span>
               <span className="text-[#0d2b28] font-medium">&#8377;{fee}</span>
             </div>
             <div className="flex justify-between text-sm">
@@ -174,7 +195,7 @@ export default function BookingConfirm() {
               <span className="text-[#10b981] font-semibold">&#8377;{advance}</span>
             </div>
             <div className="flex justify-between text-sm pt-3 border-t border-[#e5e7eb]">
-              <span className="text-[#6b7280]">Balance at clinic</span>
+              <span className="text-[#6b7280]">Balance due</span>
               <span className="text-[#9ca3af]">&#8377;{balance}</span>
             </div>
           </div>

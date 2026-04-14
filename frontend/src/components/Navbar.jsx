@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -34,6 +34,7 @@ export default function Navbar() {
     { to: '/doctor/dashboard', label: 'Dashboard' },
     { to: '/doctor/appointments', label: 'Appointments' },
     { to: '/doctor/earnings', label: 'Earnings' },
+    { to: '/doctor/analytics', label: 'Analytics' },
     { to: '/doctor/settings', label: 'Settings' },
   ];
   const adminLinks = [

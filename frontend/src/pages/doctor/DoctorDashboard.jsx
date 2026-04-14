@@ -20,7 +20,7 @@ export default function DoctorDashboard() {
 
   useEffect(() => {
     const fetchDashboard = async () => {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       try {
         const aps = await axios.get(`${API_URL}/doctors/me/appointments`, { headers: { Authorization: `Bearer ${token}` }});
         setAppointments(aps.data.data);
@@ -114,11 +114,15 @@ export default function DoctorDashboard() {
           <div className="space-y-4">
             <div className="bg-white rounded-2xl border border-[#e5e7eb] shadow-sm p-5">
               <p className="text-xs text-[#9ca3af] font-medium uppercase tracking-wide mb-3">Subscription</p>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-sm font-medium text-[#0d2b28]">Free Plan</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-[#e6f7f5] text-[#1a9e8f]">Active</span>
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-[#0d2b28] capitalize">
+                    {user?.subscription_plan ? `${user.subscription_plan} Plan` : 'Free Plan'}
+                  </span>
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-[#10b981]/10 text-[#10b981] font-bold">Active</span>
+                </div>
               </div>
-              <p className="text-xs text-[#9ca3af] mt-2">
+              <p className="text-xs text-[#9ca3af] mt-2 leading-relaxed">
                 Upgrade to appear higher in search results and unlock analytics.
               </p>
               <button
@@ -137,6 +141,7 @@ export default function DoctorDashboard() {
                 { to: '/doctor/slots', label: 'Manage Slots' },
                 { to: '/doctor/appointments', label: 'All Appointments' },
                 { to: '/doctor/earnings', label: 'Earnings' },
+                { to: '/doctor/analytics', label: 'Analytics' },
                 { to: '/doctor/settings', label: 'Settings' },
               ].map(link => (
                 <Link key={link.to} to={link.to} className="flex items-center justify-between py-2 text-sm text-[#5a7370] hover:text-[#1a9e8f] border-b border-[#f3f4f6] last:border-0 transition-colors">

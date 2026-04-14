@@ -7,11 +7,11 @@ export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [token, setToken] = useState(sessionStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       axios.get(`${API_URL}/auth/me`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -22,7 +22,7 @@ export function AuthProvider({ children }) {
       })
       .catch((e) => {
         console.error("Auth me error:", e);
-        localStorage.removeItem('token');
+        sessionStorage.removeItem('token');
       })
       .finally(() => setLoading(false));
     } else {
@@ -32,7 +32,7 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     const res = await axios.post(`${API_URL}/auth/login`, { email, password });
-    localStorage.setItem('token', res.data.access_token);
+    sessionStorage.setItem('token', res.data.access_token);
     setToken(res.data.access_token);
     setRole(res.data.role);
     
@@ -45,7 +45,7 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
     setUser(null);
     setRole(null);
     setToken(null);

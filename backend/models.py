@@ -92,6 +92,7 @@ class DoctorSlot(Base):
     start_time = Column(Time, nullable=False)
     end_time = Column(Time, nullable=False)
     is_booked = Column(Boolean, default=False)
+    is_online = Column(Boolean, default=False)
     created_at = Column(TIMESTAMP(timezone=True), default=func.now())
 
     doctor = relationship("Doctor", backref="slots")
@@ -110,6 +111,9 @@ class Booking(Base):
     payment_status = Column(PgEnum(PaymentStatusEnum, name="payment_status_enum"), default=PaymentStatusEnum.pending)
     cancellation_reason = Column(Text, nullable=True)
     cancelled_at = Column(TIMESTAMP(timezone=True), nullable=True)
+    is_emergency = Column(Boolean, default=False)
+    delay_minutes = Column(Integer, default=0)
+    discount_applied = Column(Boolean, default=False)
     created_at = Column(TIMESTAMP(timezone=True), default=func.now())
 
     patient = relationship("User", backref="bookings")

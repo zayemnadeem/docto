@@ -78,6 +78,7 @@ class DoctorSlotBase(BaseModel):
     date: date
     start_time: time
     end_time: time
+    is_online: bool = False
 
 class DoctorSlotCreate(DoctorSlotBase):
     pass
@@ -93,7 +94,7 @@ class BookingBase(BaseModel):
     slot_id: UUID
 
 class BookingCreate(BookingBase):
-    pass
+    is_emergency: bool = False
 
 class BookingOut(OrmBase, BookingBase):
     id: UUID
@@ -104,6 +105,9 @@ class BookingOut(OrmBase, BookingBase):
     payment_status: PaymentStatusEnum
     cancellation_reason: Optional[str] = None
     cancelled_at: Optional[datetime] = None
+    is_emergency: bool = False
+    delay_minutes: int = 0
+    discount_applied: bool = False
     created_at: datetime
 
 class BookingDetailOut(BookingOut):

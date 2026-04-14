@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Home from './pages/patient/Home';
@@ -10,6 +10,7 @@ import DoctorDashboard from './pages/doctor/DoctorDashboard';
 import ManageSlots from './pages/doctor/ManageSlots';
 import Appointments from './pages/doctor/Appointments';
 import Earnings from './pages/doctor/Earnings';
+import Analytics from './pages/doctor/Analytics';
 import DoctorSettings from './pages/doctor/DoctorSettings';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import ManageDoctors from './pages/admin/ManageDoctors';
@@ -58,6 +59,7 @@ function AppContent() {
           <Route path="/doctor/slots" element={<PrivateRoute role="doctor"><ManageSlots /></PrivateRoute>} />
           <Route path="/doctor/appointments" element={<PrivateRoute role="doctor"><Appointments /></PrivateRoute>} />
           <Route path="/doctor/earnings" element={<PrivateRoute role="doctor"><Earnings /></PrivateRoute>} />
+          <Route path="/doctor/analytics" element={<PrivateRoute role="doctor"><Analytics /></PrivateRoute>} />
           <Route path="/doctor/settings" element={<PrivateRoute role="doctor"><DoctorSettings /></PrivateRoute>} />
 
           {/* Admin Routes */}
