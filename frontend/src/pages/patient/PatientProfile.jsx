@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 
 export default function PatientProfile() {
@@ -10,16 +10,16 @@ export default function PatientProfile() {
     <div className="min-h-screen bg-white py-12 px-4">
       <div className="max-w-lg mx-auto">
         {/* Header */}
-        <h1 className="text-3xl text-[#111827] mb-8" style={{ fontFamily: 'Instrument Serif, serif' }}>
+        <h1 className="text-3xl text-[#0d2b28] mb-8">
           My Profile
         </h1>
 
         {/* Avatar Upload */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-24 h-24 rounded-full bg-[#f3f4f6] border-2 border-[#e5e7eb] flex items-center justify-center text-3xl font-medium text-[#374151] mb-3" style={{ fontFamily: 'Instrument Serif, serif' }}>
+          <div className="w-24 h-24 rounded-full bg-[#e6f7f5] border-2 border-[#c8e8e5] flex items-center justify-center text-3xl font-medium text-[#1a9e8f] mb-3">
             {user.full_name?.charAt(0)?.toUpperCase() || 'U'}
           </div>
-          <button className="text-sm text-[#6b7280] hover:text-[#111827] underline underline-offset-2 transition">
+          <button className="text-sm text-[#6b7280] hover:text-[#1a9e8f] underline underline-offset-2 transition">
             Change photo
           </button>
         </div>
@@ -35,7 +35,7 @@ export default function PatientProfile() {
               id="profile-name"
               type="text"
               defaultValue={user.full_name}
-              className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm text-[#111827] focus:outline-none focus:ring-2 focus:ring-[#111827] bg-white"
+              className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm text-[#0d2b28] focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white"
             />
           </div>
 
@@ -70,14 +70,14 @@ export default function PatientProfile() {
               type="tel"
               defaultValue={user.phone || ''}
               placeholder="Enter phone number"
-              className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm text-[#111827] focus:outline-none focus:ring-2 focus:ring-[#111827] bg-white"
+              className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm text-[#0d2b28] focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white"
             />
           </div>
 
           {/* Save */}
           <button
             id="profile-save-btn"
-            className="w-full bg-[#111827] text-white rounded-full py-3 text-sm font-medium hover:bg-[#374151] transition mt-2"
+            className="w-full bg-[#1a9e8f] text-white rounded-full py-3 text-sm font-medium hover:bg-[#158577] transition mt-2"
           >
             Save Changes
           </button>
@@ -86,3 +86,5 @@ export default function PatientProfile() {
     </div>
   );
 }
+
+

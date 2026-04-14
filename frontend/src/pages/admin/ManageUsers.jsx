@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../contexts/AuthContext';
 
@@ -28,7 +28,7 @@ export default function ManageUsers() {
   return (
     <div className="min-h-screen bg-white py-10 px-4">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl text-[#111827] mb-8" style={{ fontFamily: 'Instrument Serif, serif' }}>
+        <h1 className="text-3xl text-[#0d2b28] mb-8">
           Manage Users
         </h1>
 
@@ -43,7 +43,7 @@ export default function ManageUsers() {
             placeholder="Search users…"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-9 border border-[#e5e7eb] rounded-full px-4 py-2.5 text-sm text-[#111827] focus:outline-none focus:ring-2 focus:ring-[#111827] bg-white"
+            className="w-full pl-9 border border-[#e5e7eb] rounded-full px-4 py-2.5 text-sm text-[#0d2b28] focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white"
           />
         </div>
 
@@ -72,10 +72,10 @@ export default function ManageUsers() {
                 <tr key={u.id} className="hover:bg-[#f8f9fb] transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#f3f4f6] border border-[#e5e7eb] flex items-center justify-center text-xs font-medium text-[#374151]" style={{ fontFamily: 'Instrument Serif, serif' }}>
+                      <div className="w-8 h-8 rounded-full bg-[#e6f7f5] border border-[#c8e8e5] flex items-center justify-center text-xs font-medium text-[#1a9e8f]">
                         {u.full_name?.charAt(0)?.toUpperCase() || 'U'}
                       </div>
-                      <span className="text-sm font-medium text-[#111827]">{u.full_name}</span>
+                      <span className="text-sm font-medium text-[#0d2b28]">{u.full_name}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-[#374151]">{u.email}</td>
@@ -93,3 +93,5 @@ export default function ManageUsers() {
     </div>
   );
 }
+
+

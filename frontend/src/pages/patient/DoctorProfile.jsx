@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API_URL } from '../../contexts/AuthContext';
@@ -41,7 +41,7 @@ export default function DoctorProfile() {
   if (loading) return (
     <div className="min-h-screen bg-white flex items-center justify-center">
       <div className="flex flex-col items-center gap-3">
-        <div className="w-8 h-8 border-2 border-[#111827] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#1a9e8f] border-t-transparent rounded-full animate-spin" />
         <p className="text-sm text-[#9ca3af]">Loading doctor profile…</p>
       </div>
     </div>
@@ -50,8 +50,8 @@ export default function DoctorProfile() {
   if (!doctor) return (
     <div className="min-h-screen bg-white flex items-center justify-center">
       <div className="text-center">
-        <p className="text-[#111827] font-medium">Doctor not found.</p>
-        <button onClick={() => navigate('/')} className="mt-4 border border-[#e5e7eb] text-[#111827] rounded-full px-6 py-2 text-sm font-medium hover:bg-[#f8f9fb] transition">
+        <p className="text-[#0d2b28] font-medium">Doctor not found.</p>
+        <button onClick={() => navigate('/')} className="mt-4 border border-[#c8e8e5] text-[#1a9e8f] rounded-full px-6 py-2 text-sm font-medium hover:bg-[#e6f7f5] transition">
           Back to Search
         </button>
       </div>
@@ -66,7 +66,7 @@ export default function DoctorProfile() {
   return (
     <div className="bg-white min-h-screen">
       {/* Hero Strip */}
-      <div className="bg-[#f8f9fb] border-b border-[#e5e7eb]">
+      <div className="bg-[#f0faf9] border-b border-[#e5e7eb]">
         <div className="max-w-6xl mx-auto px-6 py-10">
           <div className="flex flex-col md:flex-row gap-6 items-start">
             {/* Avatar */}
@@ -75,7 +75,7 @@ export default function DoctorProfile() {
                 {photoUrl ? (
                   <img src={photoUrl} alt={doctor.full_name} className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-[#374151] text-3xl font-medium" style={{ fontFamily: 'Instrument Serif, serif' }}>
+                  <div className="w-full h-full flex items-center justify-center text-[#374151] text-3xl font-medium">
                     {initials}
                   </div>
                 )}
@@ -91,15 +91,15 @@ export default function DoctorProfile() {
 
             {/* Info */}
             <div className="flex-grow">
-              <h1 className="text-3xl text-[#111827]" style={{ fontFamily: 'Instrument Serif, serif' }}>
+              <h1 className="text-3xl text-[#0d2b28]">
                 {doctor.full_name}
               </h1>
               <div className="flex flex-wrap items-center gap-2 mt-2">
-                <span className="text-xs font-medium px-3 py-1 rounded-full bg-[#f3f4f6] text-[#374151]">
+                <span className="text-xs font-medium px-3 py-1 rounded-full bg-[#e6f7f5] text-[#1a9e8f]">
                   {doctor.specialization}
                 </span>
                 {doctor.experience_years && (
-                  <span className="text-xs font-medium px-3 py-1 rounded-full bg-[#f3f4f6] text-[#374151]">
+                  <span className="text-xs font-medium px-3 py-1 rounded-full bg-[#e6f7f5] text-[#1a9e8f]">
                     {doctor.experience_years} yrs experience
                   </span>
                 )}
@@ -111,7 +111,7 @@ export default function DoctorProfile() {
 
             {/* Book CTA */}
             <div className="flex-shrink-0">
-              <a href="#availability" className="bg-[#111827] text-white rounded-full px-7 py-3 text-sm font-medium hover:bg-[#374151] transition inline-block">
+              <a href="#availability" className="bg-[#1a9e8f] text-white rounded-full px-7 py-3 text-sm font-medium hover:bg-[#158577] transition inline-block">
                 Book Appointment
               </a>
             </div>
@@ -127,7 +127,7 @@ export default function DoctorProfile() {
             {/* About */}
             {doctor.bio && (
               <section>
-                <h2 className="text-xl text-[#111827] mb-3" style={{ fontFamily: 'Instrument Serif, serif' }}>About</h2>
+                <h2 className="text-xl text-[#0d2b28] mb-3">About</h2>
                 <p className="text-[#374151] leading-relaxed text-sm">{doctor.bio}</p>
               </section>
             )}
@@ -135,7 +135,7 @@ export default function DoctorProfile() {
             {/* Qualifications */}
             {doctor.qualifications && (
               <section>
-                <h2 className="text-xl text-[#111827] mb-3" style={{ fontFamily: 'Instrument Serif, serif' }}>Qualifications</h2>
+                <h2 className="text-xl text-[#0d2b28] mb-3">Qualifications</h2>
                 <p className="text-[#374151] text-sm">{doctor.qualifications}</p>
               </section>
             )}
@@ -143,9 +143,9 @@ export default function DoctorProfile() {
             {/* Clinic Info + Directions */}
             {(doctor.clinic_name || doctor.clinic_address) && (
               <section>
-                <h2 className="text-xl text-[#111827] mb-3" style={{ fontFamily: 'Instrument Serif, serif' }}>Clinic</h2>
+                <h2 className="text-xl text-[#0d2b28] mb-3">Clinic</h2>
                 <div className="bg-[#f8f9fb] rounded-2xl border border-[#e5e7eb] p-5">
-                  {doctor.clinic_name && <p className="font-medium text-[#111827]">{doctor.clinic_name}</p>}
+                  {doctor.clinic_name && <p className="font-medium text-[#0d2b28]">{doctor.clinic_name}</p>}
                   {doctor.clinic_address && (
                     <p className="text-sm text-[#6b7280] mt-1 flex items-start gap-1.5">
                       <svg className="w-4 h-4 mt-0.5 flex-shrink-0 text-[#9ca3af]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -163,7 +163,7 @@ export default function DoctorProfile() {
                     )}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-4 inline-flex items-center gap-2 bg-[#111827] text-white text-sm font-medium px-5 py-2.5 rounded-full hover:bg-[#374151] transition"
+                    className="mt-4 inline-flex items-center gap-2 bg-[#1a9e8f] text-white text-sm font-medium px-5 py-2.5 rounded-full hover:bg-[#158577] transition"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
@@ -180,7 +180,7 @@ export default function DoctorProfile() {
             {/* Fee Card */}
             <div className="bg-white rounded-2xl border border-[#e5e7eb] shadow-sm p-6">
               <p className="text-sm text-[#6b7280] font-medium uppercase tracking-wide">Consultation Fee</p>
-              <p className="text-4xl font-semibold text-[#111827] mt-1" style={{ fontFamily: 'Instrument Serif, serif' }}>
+              <p className="text-4xl font-semibold text-[#0d2b28] mt-1">
                 &#8377;{doctor.consultation_fee}
               </p>
               <p className="text-xs text-[#9ca3af] mt-1">Same price as clinic — no markup</p>
@@ -193,7 +193,7 @@ export default function DoctorProfile() {
                 }}
                 disabled={!selectedSlot && !!user}
                 className={`w-full mt-5 rounded-full py-3 text-sm font-medium transition ${
-                  selectedSlot ? 'bg-[#111827] text-white hover:bg-[#374151]' : 'bg-[#f3f4f6] text-[#9ca3af] cursor-default'
+                  selectedSlot ? 'bg-[#1a9e8f] text-white hover:bg-[#158577]' : 'bg-[#f3f4f6] text-[#9ca3af] cursor-default'
                 }`}
               >
                 {!user ? 'Login to Book' : selectedSlot ? 'Book Appointment' : 'Select a slot below'}
@@ -202,7 +202,7 @@ export default function DoctorProfile() {
 
             {/* Slot Picker */}
             <div id="availability">
-              <h2 className="text-xl text-[#111827] mb-4" style={{ fontFamily: 'Instrument Serif, serif' }}>Availability</h2>
+              <h2 className="text-xl text-[#0d2b28] mb-4">Availability</h2>
               <SlotPicker slots={slots} selectedSlot={selectedSlot} onSelectSlot={setSelectedSlot} />
               {selectedSlot && (
                 <button
@@ -211,7 +211,7 @@ export default function DoctorProfile() {
                     if (!user) navigate('/login');
                     else navigate(`/booking/${id}/confirm`, { state: { doctor, selectedSlot } });
                   }}
-                  className="w-full mt-4 bg-[#111827] text-white rounded-full py-3 text-sm font-medium hover:bg-[#374151] transition"
+                  className="w-full mt-4 bg-[#1a9e8f] text-white rounded-full py-3 text-sm font-medium hover:bg-[#158577] transition"
                 >
                   Proceed to Book
                 </button>
@@ -223,3 +223,5 @@ export default function DoctorProfile() {
     </div>
   );
 }
+
+

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { API_URL, useAuth } from '../../contexts/AuthContext';
@@ -21,11 +21,11 @@ export default function BookingConfirm() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
             </svg>
           </div>
-          <p className="text-[#111827] font-medium">Invalid booking parameters</p>
+          <p className="text-[#0d2b28] font-medium">Invalid booking parameters</p>
           <p className="text-sm text-[#9ca3af] mt-1">Please go back and select a slot.</p>
           <button
             onClick={() => navigate(-1)}
-            className="mt-5 border border-[#e5e7eb] text-[#111827] rounded-full px-6 py-2.5 text-sm font-medium hover:bg-[#f8f9fb] transition"
+            className="mt-5 border border-[#c8e8e5] text-[#1a9e8f] rounded-full px-6 py-2.5 text-sm font-medium hover:bg-[#e6f7f5] transition"
           >
             Go Back
           </button>
@@ -53,12 +53,12 @@ export default function BookingConfirm() {
         order_id: order.order_id,
         handler: async (response) => {
           try {
-            await axios.post(`${API_URL}/bookings/${order.booking_id}/confirm-payment`, { // Warning: create_booking returns order without booking_id in standard scheme wait... Let me look at create_booking in API!
-              // In API create_booking returns schemas.RazorpayOrderOut
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              razorpay_order_id: response.razorpay_order_id
-            }, {
+            await axios.post(`${API_URL}/bookings/${order.booking_id}/confirm-payment`, null, {
+              params: {
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                razorpay_order_id: response.razorpay_order_id
+              },
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
             });
             alert("Booking Confirmed!");
@@ -68,7 +68,7 @@ export default function BookingConfirm() {
           }
         },
         prefill: { name: user?.full_name || '', email: user?.email || '' },
-        theme: { color: "#111827" }
+        theme: { color: "#1a9e8f" }
       };
       
       if (window.Razorpay) {
@@ -108,14 +108,14 @@ export default function BookingConfirm() {
         <div className="mb-8">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-sm text-[#9ca3af] hover:text-[#374151] transition mb-6"
+            className="flex items-center gap-2 text-sm text-[#9ca3af] hover:text-[#158577] transition mb-6"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             Back
           </button>
-          <h1 className="text-3xl text-[#111827]" style={{ fontFamily: 'Instrument Serif, serif' }}>
+          <h1 className="text-3xl text-[#0d2b28]">
             Confirm Appointment
           </h1>
         </div>
@@ -131,18 +131,18 @@ export default function BookingConfirm() {
         <div className="bg-white rounded-2xl border border-[#e5e7eb] shadow-sm p-6 mb-4">
           {/* Doctor */}
           <div className="flex items-center gap-4 pb-5 border-b border-[#e5e7eb]">
-            <div className="w-14 h-14 rounded-full overflow-hidden bg-[#f3f4f6] border border-[#e5e7eb] flex-shrink-0">
+            <div className="w-14 h-14 rounded-full overflow-hidden bg-[#e6f7f5] border border-[#c8e8e5] flex-shrink-0">
               {doctor.profile_photo ? (
                 <img src={doctor.profile_photo} alt={doctor.full_name} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-[#374151] text-lg font-medium" style={{ fontFamily: 'Instrument Serif, serif' }}>
+                <div className="w-full h-full flex items-center justify-center text-[#1a9e8f] text-lg font-medium">
                   {initials}
                 </div>
               )}
             </div>
             <div>
-              <p className="font-medium text-[#111827]">{doctor.full_name}</p>
-              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#f3f4f6] text-[#374151] mt-1 inline-block">
+              <p className="font-medium text-[#0d2b28]">{doctor.full_name}</p>
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#e6f7f5] text-[#1a9e8f] mt-1 inline-block">
                 {doctor.specialization}
               </span>
             </div>
@@ -152,12 +152,12 @@ export default function BookingConfirm() {
           <div className="py-5 border-b border-[#e5e7eb] space-y-2">
             <div className="flex justify-between items-center text-sm">
               <span className="text-[#6b7280]">Date</span>
-              <span className="font-medium text-[#111827]">{formatSlotDate(selectedSlot.date)}</span>
+              <span className="font-medium text-[#0d2b28]">{formatSlotDate(selectedSlot.date)}</span>
             </div>
             <div className="flex justify-between items-center text-sm">
               <span className="text-[#6b7280]">Time</span>
-              <span className="font-medium text-[#111827]">
-                {formatTime(selectedSlot.start_time)} – {formatTime(selectedSlot.end_time)}
+              <span className="font-medium text-[#0d2b28]">
+                {formatTime(selectedSlot.start_time)} â€“ {formatTime(selectedSlot.end_time)}
               </span>
             </div>
           </div>
@@ -167,7 +167,7 @@ export default function BookingConfirm() {
             <p className="text-xs text-[#9ca3af] font-medium uppercase tracking-wide mb-3">Fee Breakdown</p>
             <div className="flex justify-between text-sm">
               <span className="text-[#6b7280]">Consultation fee</span>
-              <span className="text-[#111827] font-medium">&#8377;{fee}</span>
+              <span className="text-[#0d2b28] font-medium">&#8377;{fee}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-[#6b7280]">Advance now (30%)</span>
@@ -192,12 +192,14 @@ export default function BookingConfirm() {
           className={`w-full py-3.5 rounded-full text-sm font-medium transition-all ${
             loading
               ? 'bg-[#f3f4f6] text-[#9ca3af] cursor-not-allowed'
-              : 'bg-[#111827] text-white hover:bg-[#374151]'
+              : 'bg-[#1a9e8f] text-white hover:bg-[#158577]'
           }`}
         >
-          {loading ? 'Processing…' : `Proceed to Pay ₹${advance}`}
+          {loading ? 'Processingâ€¦' : `Proceed to Pay â‚¹${advance}`}
         </button>
       </div>
     </div>
   );
 }
+
+

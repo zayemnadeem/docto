@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../contexts/AuthContext';
 
@@ -32,7 +32,7 @@ export default function ManageDoctors() {
   return (
     <div className="min-h-screen bg-white py-10 px-4">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl text-[#111827] mb-8" style={{ fontFamily: 'Instrument Serif, serif' }}>
+        <h1 className="text-3xl text-[#0d2b28] mb-8">
           Manage Doctors
         </h1>
 
@@ -48,14 +48,14 @@ export default function ManageDoctors() {
               placeholder="Search doctors…"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full pl-9 border border-[#e5e7eb] rounded-full px-4 py-2.5 text-sm text-[#111827] focus:outline-none focus:ring-2 focus:ring-[#111827] bg-white"
+              className="w-full pl-9 border border-[#e5e7eb] rounded-full px-4 py-2.5 text-sm text-[#0d2b28] focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white"
             />
           </div>
           <select
             id="manage-doctors-specialty"
             value={specialty}
             onChange={e => setSpecialty(e.target.value)}
-            className="border border-[#e5e7eb] rounded-full px-4 py-2.5 text-sm text-[#374151] bg-white focus:outline-none focus:ring-2 focus:ring-[#111827]"
+            className="border border-[#e5e7eb] rounded-full px-4 py-2.5 text-sm text-[#374151] bg-white focus:outline-none focus:ring-2 focus:ring-[#1a9e8f]"
           >
             <option value="">All Specialties</option>
             {specialties.map(s => <option key={s} value={s}>{s}</option>)}
@@ -87,17 +87,17 @@ export default function ManageDoctors() {
                 <tr key={d.id} className="hover:bg-[#f8f9fb] transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#f3f4f6] border border-[#e5e7eb] flex items-center justify-center text-xs font-medium text-[#374151]" style={{ fontFamily: 'Instrument Serif, serif' }}>
+                      <div className="w-8 h-8 rounded-full bg-[#e6f7f5] border border-[#c8e8e5] flex items-center justify-center text-xs font-medium text-[#1a9e8f]">
                         {d.full_name?.charAt(0) || 'D'}
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-[#111827]">{d.full_name}</p>
+                        <p className="text-sm font-medium text-[#0d2b28]">{d.full_name}</p>
                         <p className="text-xs text-[#9ca3af]">{d.email}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-xs font-medium px-3 py-1 rounded-full bg-[#f3f4f6] text-[#374151]">{d.specialization}</span>
+                    <span className="text-xs font-medium px-3 py-1 rounded-full bg-[#e6f7f5] text-[#1a9e8f]">{d.specialization}</span>
                   </td>
                   <td className="px-6 py-4">
                     <span className={`text-xs font-medium px-3 py-1 rounded-full ${d.is_verified ? 'bg-[#d1fae5] text-[#065f46]' : 'bg-[#fef3c7] text-[#92400e]'}`}>
@@ -105,7 +105,7 @@ export default function ManageDoctors() {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-xs font-medium px-3 py-1 rounded-full bg-[#f3f4f6] text-[#374151]">
+                    <span className="text-xs font-medium px-3 py-1 rounded-full bg-[#e6f7f5] text-[#1a9e8f]">
                       {d.subscription_plan || 'Free'}
                     </span>
                   </td>
@@ -129,3 +129,5 @@ export default function ManageDoctors() {
     </div>
   );
 }
+
+

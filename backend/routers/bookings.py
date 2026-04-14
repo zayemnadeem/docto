@@ -84,8 +84,10 @@ def cancel_booking(id: UUID, db: Session = Depends(get_db), current_patient: Use
     slot_datetime = datetime.combine(slot.date, slot.start_time)
     hours_until = (slot_datetime - datetime.now()).total_seconds() / 3600
     
-    if hours_until <= 6:
-        raise HTTPException(status_code=400, detail="Cancellation not allowed within 6 hours of appointment")
+    if hours_until < 0:
+        raise HTTPException(status_code=400, detail="Cannot cancel an appointment that has already passed.")
+    elif hours_until <= 6:
+        raise HTTPException(status_code=400, detail="Must cancel at least 6 hours in advance.")
         
     client = razorpay.Client(auth=(os.getenv("RAZORPAY_KEY_ID", ""), os.getenv("RAZORPAY_KEY_SECRET", "")))
     if booking.payment_id:
@@ -100,3 +102,16 @@ def cancel_booking(id: UUID, db: Session = Depends(get_db), current_patient: Use
     slot.is_booked = False
     db.commit()
     return {"message": "Booking cancelled and refunded"}
+
+@router.delete("/{id}")
+def delete_pending_booking(id: UUID, db: Session = Depends(get_db), current_patient: User = Depends(auth.get_current_patient)):
+    booking = db.query(Booking).filter(Booking.id == id, Booking.patient_id == current_patient.id).first()
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+        
+    if booking.status != "pending":
+        raise HTTPException(status_code=400, detail="Only pending (incomplete) bookings can be removed.")
+        
+    db.delete(booking)
+    db.commit()
+    return {"message": "Pending booking removed."}

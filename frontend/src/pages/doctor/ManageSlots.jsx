@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../contexts/AuthContext';
 
@@ -71,13 +71,13 @@ export default function ManageSlots() {
     <div className="min-h-screen bg-white py-10 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <h1 className="text-3xl text-[#111827] mb-8" style={{ fontFamily: 'Instrument Serif, serif' }}>
+        <h1 className="text-3xl text-[#0d2b28] mb-8">
           Manage Availability
         </h1>
 
         {/* Add Slot Form */}
         <div className="bg-white rounded-2xl border border-[#e5e7eb] shadow-sm p-6 mb-8">
-          <h2 className="text-lg font-medium text-[#111827] mb-4">Add a Slot</h2>
+          <h2 className="text-lg font-medium text-[#0d2b28] mb-4">Add a Slot</h2>
           <form onSubmit={addSlot} className="flex flex-wrap gap-3 items-end">
             <div className="flex flex-col gap-1">
               <label className="text-xs text-[#6b7280] font-medium">Date</label>
@@ -88,7 +88,7 @@ export default function ManageSlots() {
                 min={new Date().toISOString().split('T')[0]}
                 value={date}
                 onChange={e => setDate(e.target.value)}
-                className="border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm text-[#111827] focus:outline-none focus:ring-2 focus:ring-[#111827] bg-white"
+                className="border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm text-[#0d2b28] focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white"
               />
             </div>
             <div className="flex flex-col gap-1">
@@ -99,7 +99,7 @@ export default function ManageSlots() {
                 required
                 value={startTime}
                 onChange={e => setStartTime(e.target.value)}
-                className="border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm text-[#111827] focus:outline-none focus:ring-2 focus:ring-[#111827] bg-white"
+                className="border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm text-[#0d2b28] focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white"
               />
             </div>
             <div className="flex flex-col gap-1">
@@ -110,13 +110,13 @@ export default function ManageSlots() {
                 required
                 value={endTime}
                 onChange={e => setEndTime(e.target.value)}
-                className="border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm text-[#111827] focus:outline-none focus:ring-2 focus:ring-[#111827] bg-white"
+                className="border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm text-[#0d2b28] focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white"
               />
             </div>
             <button
               id="add-slot-btn"
               type="submit"
-              className="bg-[#111827] text-white rounded-full px-6 py-3 text-sm font-medium hover:bg-[#374151] transition"
+              className="bg-[#1a9e8f] text-white rounded-full px-6 py-3 text-sm font-medium hover:bg-[#158577] transition"
             >
               Add Slot
             </button>
@@ -140,8 +140,8 @@ export default function ManageSlots() {
                     onClick={() => setSelectedDate(d)}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                       selectedDate === d
-                        ? 'bg-[#111827] text-white'
-                        : 'border border-[#e5e7eb] text-[#374151] hover:bg-[#f8f9fb]'
+                        ? 'bg-[#1a9e8f] text-white'
+                        : 'border border-[#e5e7eb] text-[#374151] hover:bg-[#e6f7f5]'
                     }`}
                   >
                     <span>{formatDate(d)}</span>
@@ -178,7 +178,7 @@ export default function ManageSlots() {
               </div>
             ) : (
               <div>
-                <h2 className="text-lg font-medium text-[#111827] mb-4">{formatDate(selectedDate)}</h2>
+                <h2 className="text-lg font-medium text-[#0d2b28] mb-4">{formatDate(selectedDate)}</h2>
                 <div className="flex flex-wrap gap-2">
                   {daySlots.map(s => (
                     <div
@@ -189,9 +189,9 @@ export default function ManageSlots() {
                           : 'bg-white border-[#e5e7eb] text-[#374151]'
                       }`}
                     >
-                      <span>{formatTime(s.start_time)} – {formatTime(s.end_time)}</span>
+                      <span>{formatTime(s.start_time)} â€“ {formatTime(s.end_time)}</span>
                       {s.is_booked ? (
-                        <span className="text-[#92400e] font-semibold">•&nbsp;Booked</span>
+                        <span className="text-[#92400e] font-semibold">â€¢&nbsp;Booked</span>
                       ) : (
                         <button
                           id={`delete-slot-${s.id}`}
@@ -218,3 +218,4 @@ export default function ManageSlots() {
     </div>
   );
 }
+

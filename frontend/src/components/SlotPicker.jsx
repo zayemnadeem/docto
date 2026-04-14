@@ -55,8 +55,8 @@ export default function SlotPicker({ slots, selectedSlot, onSelectSlot }) {
               onClick={() => setActiveDate(date)}
               className={`flex-shrink-0 flex flex-col items-center px-4 py-2.5 rounded-full text-sm font-medium transition-all min-w-[64px] ${
                 isActive
-                  ? 'bg-[#111827] text-white shadow-sm'
-                  : 'border border-[#e5e7eb] text-[#374151] hover:bg-[#f8f9fb]'
+                  ? 'bg-[#1a9e8f] text-white shadow-sm'
+                  : 'border border-[#e5e7eb] text-[#374151] hover:bg-[#e6f7f5]'
               } ${!hasSlots ? 'opacity-50' : ''}`}
             >
               <span className="text-xs opacity-75">{day}</span>
@@ -82,8 +82,8 @@ export default function SlotPicker({ slots, selectedSlot, onSelectSlot }) {
                   ${slot.is_booked
                     ? 'bg-[#f3f4f6] text-[#9ca3af] cursor-not-allowed line-through'
                     : isSelected
-                      ? 'bg-[#111827] text-white shadow-sm'
-                      : 'border border-[#e5e7eb] text-[#374151] hover:bg-[#111827] hover:text-white hover:border-[#111827]'}
+                      ? 'bg-[#1a9e8f] text-white shadow-sm'
+                      : 'border border-[#e5e7eb] text-[#374151] hover:bg-[#1a9e8f] hover:text-white hover:border-[#1a9e8f]'}
                 `}
               >
                 {formatTime(slot.start_time)}

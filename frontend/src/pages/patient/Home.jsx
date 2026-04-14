@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../contexts/AuthContext';
 import DoctorCard from '../../components/DoctorCard';
@@ -109,14 +109,14 @@ export default function Home() {
       <section
         className="relative py-24 px-6 overflow-hidden"
         style={{
-          background: `radial-gradient(ellipse at 20% 50%, #dde8f8 0%, transparent 55%),
-                       radial-gradient(ellipse at 80% 20%, #e8dff5 0%, transparent 55%), #fff`
+          background: `radial-gradient(ellipse at 20% 50%, #c8ede9 0%, transparent 55%),
+                       radial-gradient(ellipse at 80% 20%, #d0f0ec 0%, transparent 55%), #fff`
         }}
       >
         <div className="max-w-3xl mx-auto text-center">
           <h1
-            className="text-5xl md:text-6xl text-[#111827] leading-tight tracking-tight"
-            style={{ fontFamily: 'Instrument Serif, serif' }}
+            className="text-5xl md:text-6xl text-[#0d2b28] leading-tight tracking-tight"
+           
           >
             Find the right doctor,<br />right near you.
           </h1>
@@ -127,14 +127,14 @@ export default function Home() {
             <a
               href="#doctors"
               id="hero-find-doctors-btn"
-              className="bg-[#111827] text-white rounded-full px-7 py-3 text-sm font-medium hover:bg-[#374151] transition"
+              className="bg-[#1a9e8f] text-white rounded-full px-7 py-3 text-sm font-medium hover:bg-[#158577] transition"
             >
               Find Doctors
             </a>
             <button
               id="hero-location-btn"
               onClick={getLocation}
-              className="border border-[#e5e7eb] text-[#111827] rounded-full px-7 py-3 text-sm font-medium hover:bg-[#f8f9fb] transition flex items-center gap-2"
+              className="border border-[#c8e8e5] text-[#1a9e8f] rounded-full px-7 py-3 text-sm font-medium hover:bg-[#e6f7f5] transition flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -155,7 +155,7 @@ export default function Home() {
               id="filter-specialty"
               value={specialty}
               onChange={e => setSpecialty(e.target.value)}
-              className="border border-[#e5e7eb] rounded-full px-4 py-2 text-sm text-[#374151] bg-white focus:outline-none focus:ring-2 focus:ring-[#111827] cursor-pointer appearance-none pr-8 relative"
+              className="border border-[#e5e7eb] rounded-full px-4 py-2 text-sm text-[#374151] bg-white focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] cursor-pointer appearance-none pr-8 relative"
             >
               <option value="">All Specialties</option>
               {specialties.map(s => <option key={s} value={s}>{s}</option>)}
@@ -166,7 +166,7 @@ export default function Home() {
               id="filter-sort"
               value={sortBy}
               onChange={e => setSortBy(e.target.value)}
-              className="border border-[#e5e7eb] rounded-full px-4 py-2 text-sm text-[#374151] bg-white focus:outline-none focus:ring-2 focus:ring-[#111827] cursor-pointer"
+              className="border border-[#e5e7eb] rounded-full px-4 py-2 text-sm text-[#374151] bg-white focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] cursor-pointer"
             >
               <option value="distance">Nearest first</option>
               <option value="rating">Top rated</option>
@@ -181,7 +181,7 @@ export default function Home() {
                 placeholder="Search by name or area..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="w-full border border-[#e5e7eb] rounded-full px-4 py-2 text-sm text-[#374151] bg-white focus:outline-none focus:ring-2 focus:ring-[#111827]"
+                className="w-full border border-[#e5e7eb] rounded-full px-4 py-2 text-sm text-[#374151] bg-white focus:outline-none focus:ring-2 focus:ring-[#1a9e8f]"
               />
             </div>
 
@@ -197,7 +197,7 @@ export default function Home() {
                   ? 'border-[#ef4444] text-[#ef4444] bg-[#fef2f2]'
                   : locationStatus === 'detecting'
                   ? 'border-[#f59e0b] text-[#f59e0b] bg-[#fffbeb]'
-                  : 'border-[#e5e7eb] text-[#111827] hover:bg-[#f8f9fb]'
+                  : 'border-[#e5e7eb] text-[#0d2b28] hover:bg-[#e6f7f5]'
               }`}
             >
               {locationStatus === 'detecting' ? (
@@ -226,7 +226,7 @@ export default function Home() {
 
         {/* Section heading */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl text-[#111827]" style={{ fontFamily: 'Instrument Serif, serif' }}>
+          <h2 className="text-2xl text-[#0d2b28]">
             {loading ? 'Finding doctors…' : `${doctors.length} doctor${doctors.length !== 1 ? 's' : ''} nearby`}
           </h2>
         </div>
@@ -248,14 +248,14 @@ export default function Home() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-            <h3 className="text-xl text-[#111827]" style={{ fontFamily: 'Instrument Serif, serif' }}>No doctors found</h3>
+            <h3 className="text-xl text-[#0d2b28]">No doctors found</h3>
             <p className="text-[#9ca3af] mt-2 text-sm max-w-xs">
               Try adjusting your filters or expanding your search area.
             </p>
             <button
               id="clear-filters-btn"
               onClick={() => { setSpecialty(''); setSearchQuery(''); }}
-              className="mt-5 border border-[#e5e7eb] text-[#111827] rounded-full px-6 py-2.5 text-sm font-medium hover:bg-[#f8f9fb] transition"
+              className="mt-5 border border-[#c8e8e5] text-[#1a9e8f] rounded-full px-6 py-2.5 text-sm font-medium hover:bg-[#e6f7f5] transition"
             >
               Clear Filters
             </button>
@@ -265,3 +265,5 @@ export default function Home() {
     </div>
   );
 }
+
+

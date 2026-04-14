@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL, useAuth } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
@@ -43,10 +43,10 @@ export default function DoctorDashboard() {
   });
 
   const stats = [
-    { label: 'Bookings today', value: todayAppts.length, icon: '📅' },
-    { label: 'Total earned', value: `₹${earnings?.total_earned || 0}`, icon: '💰' },
-    { label: 'Rating', value: `${user?.avg_rating?.toFixed(1) || '—'} ★`, icon: '⭐' },
-    { label: 'Open slots', value: openSlotsCount, icon: '🕐' },
+    { label: 'Bookings today', value: todayAppts.length, icon: 'ðŸ“…' },
+    { label: 'Total earned', value: `â‚¹${earnings?.total_earned || 0}`, icon: 'ðŸ’°' },
+    { label: 'Rating', value: `${user?.avg_rating?.toFixed(1) || 'â€”'} â˜…`, icon: 'â­' },
+    { label: 'Open slots', value: openSlotsCount, icon: 'ðŸ•' },
   ];
 
   return (
@@ -56,7 +56,7 @@ export default function DoctorDashboard() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl text-[#111827]" style={{ fontFamily: 'Instrument Serif, serif' }}>
+          <h1 className="text-3xl text-[#0d2b28]">
             Dashboard
           </h1>
           <p className="text-[#9ca3af] text-sm mt-1">Welcome back, {user?.full_name?.split(' ')[0]}</p>
@@ -68,7 +68,7 @@ export default function DoctorDashboard() {
             <div key={i} className="bg-white rounded-2xl border border-[#e5e7eb] shadow-sm p-5">
               <div className="text-2xl mb-2">{s.icon}</div>
               <p className="text-[#9ca3af] text-xs font-medium uppercase tracking-wide">{s.label}</p>
-              <p className="text-2xl font-semibold text-[#111827] mt-1" style={{ fontFamily: 'Instrument Serif, serif' }}>{s.value}</p>
+              <p className="text-2xl font-semibold text-[#0d2b28] mt-1">{s.value}</p>
             </div>
           ))}
         </div>
@@ -76,27 +76,27 @@ export default function DoctorDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Today's Schedule */}
           <div className="lg:col-span-2">
-            <h2 className="text-xl text-[#111827] mb-4" style={{ fontFamily: 'Instrument Serif, serif' }}>
+            <h2 className="text-xl text-[#0d2b28] mb-4">
               Today's Schedule
             </h2>
             <div className="space-y-3">
               {todayAppts.length === 0 ? (
                 <div className="bg-[#f8f9fb] rounded-2xl border border-[#e5e7eb] p-8 text-center">
                   <p className="text-[#9ca3af] text-sm">No appointments scheduled for today.</p>
-                  <Link to="/doctor/slots" className="mt-3 inline-block text-sm text-[#111827] underline underline-offset-2">
-                    Manage your slots →
+                  <Link to="/doctor/slots" className="mt-3 inline-block text-sm text-[#1a9e8f] underline underline-offset-2">
+                    Manage your slots â†’
                   </Link>
                 </div>
               ) : (
                 todayAppts.map((a, i) => (
                   <div key={i} className="bg-white rounded-2xl border border-[#e5e7eb] shadow-sm p-5 flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-[#f3f4f6] border border-[#e5e7eb] flex items-center justify-center text-sm font-medium text-[#374151]" style={{ fontFamily: 'Instrument Serif, serif' }}>
+                      <div className="w-10 h-10 rounded-full bg-[#e6f7f5] border border-[#c8e8e5] flex items-center justify-center text-sm font-medium text-[#1a9e8f]">
                         {a.patient?.full_name?.charAt(0) || 'P'}
                       </div>
                       <div>
-                        <p className="font-medium text-[#111827] text-sm">{a.patient?.full_name}</p>
-                        <p className="text-xs text-[#9ca3af]">{a.slot?.start_time?.slice(0, 5)} – {a.slot?.end_time?.slice(0, 5)}</p>
+                        <p className="font-medium text-[#0d2b28] text-sm">{a.patient?.full_name}</p>
+                        <p className="text-xs text-[#9ca3af]">{a.slot?.start_time?.slice(0, 5)} â€“ {a.slot?.end_time?.slice(0, 5)}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -115,8 +115,8 @@ export default function DoctorDashboard() {
             <div className="bg-white rounded-2xl border border-[#e5e7eb] shadow-sm p-5">
               <p className="text-xs text-[#9ca3af] font-medium uppercase tracking-wide mb-3">Subscription</p>
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-sm font-medium text-[#111827]">Free Plan</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-[#f3f4f6] text-[#374151]">Active</span>
+                <span className="text-sm font-medium text-[#0d2b28]">Free Plan</span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-[#e6f7f5] text-[#1a9e8f]">Active</span>
               </div>
               <p className="text-xs text-[#9ca3af] mt-2">
                 Upgrade to appear higher in search results and unlock analytics.
@@ -124,7 +124,7 @@ export default function DoctorDashboard() {
               <button
                 id="view-plans-btn"
                 onClick={() => setShowPlans(true)}
-                className="w-full mt-4 bg-[#111827] text-white rounded-full py-2.5 text-sm font-medium hover:bg-[#374151] transition"
+                className="w-full mt-4 bg-[#1a9e8f] text-white rounded-full py-2.5 text-sm font-medium hover:bg-[#158577] transition"
               >
                 View Plans
               </button>
@@ -139,7 +139,7 @@ export default function DoctorDashboard() {
                 { to: '/doctor/earnings', label: 'Earnings' },
                 { to: '/doctor/settings', label: 'Settings' },
               ].map(link => (
-                <Link key={link.to} to={link.to} className="flex items-center justify-between py-2 text-sm text-[#374151] hover:text-[#111827] border-b border-[#f3f4f6] last:border-0 transition-colors">
+                <Link key={link.to} to={link.to} className="flex items-center justify-between py-2 text-sm text-[#5a7370] hover:text-[#1a9e8f] border-b border-[#f3f4f6] last:border-0 transition-colors">
                   {link.label}
                   <svg className="w-4 h-4 text-[#9ca3af]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -153,3 +153,4 @@ export default function DoctorDashboard() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { API_URL } from '../contexts/AuthContext';
 
@@ -12,18 +12,18 @@ export default function DoctorCard({ doctor }) {
     <div className="bg-white rounded-2xl border border-[#e5e7eb] shadow-sm p-6 flex flex-col gap-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group">
       {/* Header: Avatar + Name + Specialty */}
       <div className="flex items-start gap-4">
-        <div className="w-14 h-14 rounded-full overflow-hidden flex-shrink-0 bg-[#f3f4f6] border border-[#e5e7eb]">
+        <div className="w-14 h-14 rounded-full overflow-hidden flex-shrink-0 bg-[#e6f7f5] border border-[#c8e8e5]">
           {photoUrl ? (
             <img src={photoUrl} alt={doctor.full_name} className="w-full h-full object-cover" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-[#374151] text-lg font-semibold" style={{ fontFamily: 'Instrument Serif, serif' }}>
+            <div className="w-full h-full flex items-center justify-center text-[#1a9e8f] text-lg font-semibold">
               {initials}
             </div>
           )}
         </div>
         <div className="flex-grow min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="text-[#111827] font-semibold text-base leading-tight truncate" style={{ fontFamily: 'Instrument Serif, serif' }}>
+            <h3 className="text-[#0d2b28] font-semibold text-base leading-tight truncate">
               {doctor.full_name}
             </h3>
             {doctor.is_verified && (
@@ -34,7 +34,7 @@ export default function DoctorCard({ doctor }) {
               </span>
             )}
           </div>
-          <span className="inline-block mt-1 text-xs font-medium px-3 py-1 rounded-full bg-[#f3f4f6] text-[#374151]">
+          <span className="inline-block mt-1 text-xs font-medium px-3 py-1 rounded-full bg-[#e6f7f5] text-[#1a9e8f]">
             {doctor.specialization}
           </span>
         </div>
@@ -44,22 +44,22 @@ export default function DoctorCard({ doctor }) {
       <div className="flex flex-col gap-1.5 text-sm text-[#6b7280]">
         {/* Rating */}
         <div className="flex items-center gap-1.5">
-          <span className="text-[#f59e0b]">★</span>
-          <span className="font-semibold text-[#111827]">{doctor.avg_rating?.toFixed(1) || '—'}</span>
+          <span className="text-[#f59e0b]">â˜…</span>
+          <span className="font-semibold text-[#0d2b28]">{doctor.avg_rating?.toFixed(1) || 'â€”'}</span>
           <span className="text-[#9ca3af]">({doctor.total_reviews || 0} reviews)</span>
         </div>
         {/* Distance + Clinic */}
         {doctor.distance_km !== undefined && (
           <div className="flex items-center gap-1.5">
-            <span className="text-[#9ca3af]">📍</span>
+            <span className="text-[#9ca3af]">ðŸ“</span>
             <span>{doctor.distance_km?.toFixed(1)} km away</span>
-            {doctor.clinic_name && <span className="text-[#9ca3af]">· {doctor.clinic_name}</span>}
+            {doctor.clinic_name && <span className="text-[#9ca3af]">Â· {doctor.clinic_name}</span>}
           </div>
         )}
         {/* Fee */}
         <div className="flex items-center gap-1.5">
-          <span className="text-[#9ca3af]">💰</span>
-          <span className="font-medium text-[#111827]">₹{doctor.consultation_fee}</span>
+          <span className="text-[#9ca3af]">ðŸ’°</span>
+          <span className="font-medium text-[#0d2b28]">â‚¹{doctor.consultation_fee}</span>
           <span className="text-[#9ca3af]">consultation</span>
         </div>
       </div>
@@ -69,14 +69,14 @@ export default function DoctorCard({ doctor }) {
         <Link
           to={`/doctor/${doctor.id}`}
           id={`view-doctor-${doctor.id}`}
-          className="flex-1 text-center border border-[#e5e7eb] text-[#111827] rounded-full px-4 py-2 text-sm font-medium hover:bg-[#f8f9fb] transition"
+          className="flex-1 text-center border border-[#c8e8e5] text-[#1a9e8f] rounded-full px-4 py-2 text-sm font-medium hover:bg-[#e6f7f5] transition"
         >
           View Profile
         </Link>
         <Link
           to={`/doctor/${doctor.id}`}
           id={`book-doctor-${doctor.id}`}
-          className="flex-1 text-center bg-[#111827] text-white rounded-full px-4 py-2 text-sm font-medium hover:bg-[#374151] transition"
+          className="flex-1 text-center bg-[#1a9e8f] text-white rounded-full px-4 py-2 text-sm font-medium hover:bg-[#158577] transition"
         >
           Book Now
         </Link>
@@ -84,3 +84,4 @@ export default function DoctorCard({ doctor }) {
     </div>
   );
 }
+

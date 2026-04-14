@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../contexts/AuthContext';
 
@@ -6,7 +6,7 @@ const STATUS_STYLES = {
   confirmed: 'bg-[#d1fae5] text-[#065f46]',
   pending: 'bg-[#fef3c7] text-[#92400e]',
   cancelled: 'bg-[#fee2e2] text-[#991b1b]',
-  completed: 'bg-[#f3f4f6] text-[#374151]',
+  completed: 'bg-[#e6f7f5] text-[#1a9e8f]',
 };
 
 export default function ManageBookings() {
@@ -38,7 +38,7 @@ export default function ManageBookings() {
   return (
     <div className="min-h-screen bg-white py-10 px-4">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl text-[#111827] mb-8" style={{ fontFamily: 'Instrument Serif, serif' }}>
+        <h1 className="text-3xl text-[#0d2b28] mb-8">
           All Bookings
         </h1>
 
@@ -51,8 +51,8 @@ export default function ManageBookings() {
               onClick={() => setStatusFilter(s)}
               className={`px-4 py-2 rounded-full text-xs font-medium capitalize transition-all ${
                 statusFilter === s
-                  ? 'bg-[#111827] text-white shadow-sm'
-                  : 'text-[#6b7280] hover:text-[#111827]'
+                  ? 'bg-[#1a9e8f] text-white shadow-sm'
+                  : 'text-[#6b7280] hover:text-[#1a9e8f]'
               }`}
             >
               {s}
@@ -86,7 +86,7 @@ export default function ManageBookings() {
                   <td className="px-6 py-4 font-mono text-xs text-[#9ca3af]">
                     {String(b.id).slice(0, 8)}…
                   </td>
-                  <td className="px-6 py-4 text-sm text-[#111827] font-medium">{b.patient?.full_name || '—'}</td>
+                  <td className="px-6 py-4 text-sm text-[#0d2b28] font-medium">{b.patient?.full_name || '—'}</td>
                   <td className="px-6 py-4 text-sm text-[#374151]">{b.doctor?.full_name || '—'}</td>
                   <td className="px-6 py-4 text-sm text-[#374151]">{formatDate(b.slot?.date)}</td>
                   <td className="px-6 py-4">
@@ -94,7 +94,7 @@ export default function ManageBookings() {
                       {b.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm font-medium text-[#111827]">₹{b.advance_amount || 0}</td>
+                  <td className="px-6 py-4 text-sm font-medium text-[#0d2b28]">₹{b.advance_amount || 0}</td>
                 </tr>
               ))}
             </tbody>
@@ -104,3 +104,5 @@ export default function ManageBookings() {
     </div>
   );
 }
+
+

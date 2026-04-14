@@ -77,8 +77,8 @@ export default function Register() {
     <div
       className="min-h-screen flex items-center justify-center px-4 py-12"
       style={{
-        background: `radial-gradient(ellipse at 20% 50%, #dde8f8 0%, transparent 55%),
-                     radial-gradient(ellipse at 80% 20%, #e8dff5 0%, transparent 55%), #fff`
+        background: `radial-gradient(ellipse at 20% 50%, #c8ede9 0%, transparent 55%),
+                     radial-gradient(ellipse at 80% 20%, #d0f0ec 0%, transparent 55%), #fff`
       }}
     >
       <div className="w-full max-w-lg">
@@ -89,7 +89,7 @@ export default function Register() {
 
         {/* Card */}
         <div className="bg-white rounded-2xl border border-[#e5e7eb] shadow-sm p-8">
-          <h1 className="text-2xl text-[#111827] mb-1 text-center" style={{ fontFamily: 'Instrument Serif, serif' }}>
+          <h1 className="text-2xl text-[#0d2b28] mb-1 text-center">
             Create account
           </h1>
           <p className="text-sm text-[#9ca3af] text-center mb-6">Join Docto today</p>
@@ -103,7 +103,7 @@ export default function Register() {
                 id={`register-role-${r}`}
                 onClick={() => { setRole(r); setStep(1); }}
                 className={`px-6 py-2 rounded-full text-sm font-medium capitalize transition-all ${
-                  role === r ? 'bg-[#111827] text-white shadow-sm' : 'text-[#6b7280] hover:text-[#111827]'
+                  role === r ? 'bg-[#1a9e8f] text-white shadow-sm' : 'text-[#5a7370] hover:text-[#1a9e8f]'
                 }`}
               >
                 {r}
@@ -117,9 +117,9 @@ export default function Register() {
               {[1, 2, 3].map(s => (
                 <div key={s} className="flex items-center gap-2">
                   <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold transition-all ${
-                    s === step ? 'bg-[#111827] text-white' : s < step ? 'bg-[#10b981] text-white' : 'bg-[#f3f4f6] text-[#9ca3af]'
+                    s === step ? 'bg-[#1a9e8f] text-white' : s < step ? 'bg-[#10b981] text-white' : 'bg-[#f3f4f6] text-[#9ca3af]'
                   }`}>
-                    {s < step ? '✓' : s}
+                    {s < step ? 'âœ“' : s}
                   </div>
                   {s < 3 && <div className={`w-8 h-0.5 ${s < step ? 'bg-[#10b981]' : 'bg-[#f3f4f6]'}`} />}
                 </div>
@@ -141,20 +141,20 @@ export default function Register() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-medium text-[#6b7280] uppercase tracking-wide mb-2">Full Name</label>
-                    <input id="register-name" type="text" required value={name} onChange={e => setName(e.target.value)} placeholder="Dr. Arjun Kumar" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#111827] bg-white text-[#111827]" />
+                    <input id="register-name" type="text" required value={name} onChange={e => setName(e.target.value)} placeholder={role === 'doctor' ? "Dr. Arjun Kumar" : "Arjun Kumar"} className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white text-[#0d2b28]" />
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-[#6b7280] uppercase tracking-wide mb-2">Phone</label>
-                    <input id="register-phone" type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+91 XXXXX XXXXX" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#111827] bg-white text-[#111827]" />
+                    <input id="register-phone" type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+91 XXXXX XXXXX" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white text-[#0d2b28]" />
                   </div>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-[#6b7280] uppercase tracking-wide mb-2">Email</label>
-                  <input id="register-email" type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#111827] bg-white text-[#111827]" />
+                  <input id="register-email" type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white text-[#0d2b28]" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-[#6b7280] uppercase tracking-wide mb-2">Password</label>
-                  <input id="register-password" type="password" required value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#111827] bg-white text-[#111827]" />
+                  <input id="register-password" type="password" required value={password} onChange={e => setPassword(e.target.value)} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white text-[#0d2b28]" />
                 </div>
               </>
             )}
@@ -164,22 +164,22 @@ export default function Register() {
               <>
                 <div>
                   <label className="block text-xs font-medium text-[#6b7280] uppercase tracking-wide mb-2">Specialization</label>
-                  <select id="register-specialization" required value={specialization} onChange={e => setSpecialization(e.target.value)} className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#111827] bg-white text-[#111827]">
+                  <select id="register-specialization" required value={specialization} onChange={e => setSpecialization(e.target.value)} className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white text-[#0d2b28]">
                     <option value="">Select specialty</option>
                     {specialties.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-[#6b7280] uppercase tracking-wide mb-2">Qualifications</label>
-                  <input id="register-qualifications" type="text" value={qualifications} onChange={e => setQualifications(e.target.value)} placeholder="MBBS, MD" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#111827] bg-white text-[#111827]" />
+                  <input id="register-qualifications" type="text" value={qualifications} onChange={e => setQualifications(e.target.value)} placeholder="MBBS, MD" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white text-[#0d2b28]" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-[#6b7280] uppercase tracking-wide mb-2">Years of Experience</label>
-                  <input id="register-experience" type="number" min="0" value={experienceYears} onChange={e => setExperienceYears(e.target.value)} placeholder="e.g. 10" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#111827] bg-white text-[#111827]" />
+                  <input id="register-experience" type="number" min="0" value={experienceYears} onChange={e => setExperienceYears(e.target.value)} placeholder="e.g. 10" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white text-[#0d2b28]" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-[#6b7280] uppercase tracking-wide mb-2">Bio</label>
-                  <textarea id="register-bio" value={bio} onChange={e => setBio(e.target.value)} placeholder="Tell patients about yourself…" rows={3} className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#111827] bg-white text-[#111827] resize-none" />
+                  <textarea id="register-bio" value={bio} onChange={e => setBio(e.target.value)} placeholder="Tell patients about yourselfâ€¦" rows={3} className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white text-[#0d2b28] resize-none" />
                 </div>
               </>
             )}
@@ -189,15 +189,15 @@ export default function Register() {
               <>
                 <div>
                   <label className="block text-xs font-medium text-[#6b7280] uppercase tracking-wide mb-2">Clinic Name</label>
-                  <input id="register-clinic-name" type="text" value={clinicName} onChange={e => setClinicName(e.target.value)} placeholder="Apollo Clinic" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#111827] bg-white text-[#111827]" />
+                  <input id="register-clinic-name" type="text" value={clinicName} onChange={e => setClinicName(e.target.value)} placeholder="Apollo Clinic" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white text-[#0d2b28]" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-[#6b7280] uppercase tracking-wide mb-2">Clinic Address</label>
-                  <input id="register-clinic-address" type="text" value={clinicAddress} onChange={e => setClinicAddress(e.target.value)} placeholder="123, Anna Salai, Chennai" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#111827] bg-white text-[#111827]" />
+                  <input id="register-clinic-address" type="text" value={clinicAddress} onChange={e => setClinicAddress(e.target.value)} placeholder="123, Anna Salai, Chennai" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white text-[#0d2b28]" />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#6b7280] uppercase tracking-wide mb-2">Consultation Fee (₹)</label>
-                  <input id="register-fee" type="number" min="0" value={consultationFee} onChange={e => setConsultationFee(e.target.value)} placeholder="500" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#111827] bg-white text-[#111827]" />
+                  <label className="block text-xs font-medium text-[#6b7280] uppercase tracking-wide mb-2">Consultation Fee (â‚¹)</label>
+                  <input id="register-fee" type="number" min="0" value={consultationFee} onChange={e => setConsultationFee(e.target.value)} placeholder="500" className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white text-[#0d2b28]" />
                 </div>
               </>
             )}
@@ -208,7 +208,7 @@ export default function Register() {
                 <button
                   type="button"
                   onClick={() => setStep(s => s - 1)}
-                  className="flex-1 border border-[#e5e7eb] text-[#111827] rounded-full py-3 text-sm font-medium hover:bg-[#f8f9fb] transition"
+                  className="flex-1 border border-[#c8e8e5] text-[#1a9e8f] rounded-full py-3 text-sm font-medium hover:bg-[#e6f7f5] transition"
                 >
                   Back
                 </button>
@@ -218,17 +218,17 @@ export default function Register() {
                 type="submit"
                 disabled={loading}
                 className={`flex-1 rounded-full py-3 text-sm font-medium transition ${
-                  loading ? 'bg-[#f3f4f6] text-[#9ca3af] cursor-not-allowed' : 'bg-[#111827] text-white hover:bg-[#374151]'
+                  loading ? 'bg-[#f3f4f6] text-[#9ca3af] cursor-not-allowed' : 'bg-[#1a9e8f] text-white hover:bg-[#158577]'
                 }`}
               >
-                {loading ? 'Creating account…' : step < maxSteps ? `Next — Step ${step + 1} of ${maxSteps}` : 'Create Account'}
+                {loading ? 'Creating accountâ€¦' : step < maxSteps ? `Next â€” Step ${step + 1} of ${maxSteps}` : 'Create Account'}
               </button>
             </div>
           </form>
 
           <p className="text-center text-sm text-[#9ca3af] mt-6">
             Already have an account?{' '}
-            <Link to="/login" className="text-[#111827] font-medium underline underline-offset-2 hover:text-[#374151] transition">
+            <Link to="/login" className="text-[#1a9e8f] font-medium underline underline-offset-2 hover:text-[#158577] transition">
               Login
             </Link>
           </p>
@@ -237,3 +237,4 @@ export default function Register() {
     </div>
   );
 }
+

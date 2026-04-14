@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
@@ -48,7 +48,7 @@ export default function AdminDashboard() {
 
   if (!stats) return (
     <div className="min-h-screen bg-white flex items-center justify-center">
-      <div className="w-7 h-7 border-2 border-[#111827] border-t-transparent rounded-full animate-spin" />
+      <div className="w-7 h-7 border-2 border-[#1a9e8f] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
@@ -64,7 +64,7 @@ export default function AdminDashboard() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl text-[#111827]" style={{ fontFamily: 'Instrument Serif, serif' }}>
+          <h1 className="text-3xl text-[#0d2b28]">
             Admin Operations
           </h1>
           <div className="flex gap-2">
@@ -87,7 +87,7 @@ export default function AdminDashboard() {
               <div className="text-2xl mb-2">{c.icon}</div>
               <p className="text-xs text-[#9ca3af] font-medium uppercase tracking-wide">{c.label}</p>
               <div className="flex items-center gap-2 mt-1">
-                <p className={`text-2xl font-semibold ${c.danger ? 'text-[#ef4444]' : 'text-[#111827]'}`} style={{ fontFamily: 'Instrument Serif, serif' }}>
+                <p className={`text-2xl font-semibold ${c.danger ? 'text-[#ef4444]' : 'text-[#0d2b28]'}`}>
                   {c.value}
                 </p>
                 {c.danger && c.value > 0 && (
@@ -103,7 +103,7 @@ export default function AdminDashboard() {
         {/* Pending Verifications */}
         <div className="bg-white rounded-2xl border border-[#e5e7eb] shadow-sm overflow-hidden mb-8">
           <div className="px-6 py-4 border-b border-[#e5e7eb] flex items-center justify-between">
-            <h2 className="text-lg font-medium text-[#111827]" style={{ fontFamily: 'Instrument Serif, serif' }}>
+            <h2 className="text-lg font-medium text-[#0d2b28]">
               Pending Doctor Approvals
             </h2>
             {pendingDoctors.length > 0 && (
@@ -130,14 +130,14 @@ export default function AdminDashboard() {
                   <tr key={d.id} className="hover:bg-[#f8f9fb] transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-[#f3f4f6] border border-[#e5e7eb] flex items-center justify-center text-xs font-medium text-[#374151]" style={{ fontFamily: 'Instrument Serif, serif' }}>
+                        <div className="w-8 h-8 rounded-full bg-[#e6f7f5] border border-[#c8e8e5] flex items-center justify-center text-xs font-medium text-[#1a9e8f]">
                           {d.full_name?.charAt(0) || 'D'}
                         </div>
-                        <span className="text-sm font-medium text-[#111827]">{d.full_name}</span>
+                        <span className="text-sm font-medium text-[#0d2b28]">{d.full_name}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-xs font-medium px-3 py-1 rounded-full bg-[#f3f4f6] text-[#374151]">{d.specialization}</span>
+                      <span className="text-xs font-medium px-3 py-1 rounded-full bg-[#e6f7f5] text-[#1a9e8f]">{d.specialization}</span>
                     </td>
                     <td className="px-6 py-4 text-sm text-[#9ca3af]">{d.created_at ? new Date(d.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '—'}</td>
                     <td className="px-6 py-4">
@@ -168,3 +168,5 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
+

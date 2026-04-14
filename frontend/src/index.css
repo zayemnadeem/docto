@@ -1,19 +1,20 @@
 @import "tailwindcss";
 
 @theme {
-  --color-accent: #111827;
-  --color-accent-hover: #374151;
-  --color-surface: #f8f9fb;
+  --color-accent: #1a9e8f;
+  --color-accent-hover: #158577;
+  --color-accent-light: #e6f7f5;
+  --color-surface: #f8fafa;
   --color-border: #e5e7eb;
   --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
-  --color-badge-bg: #f3f4f6;
-  --color-text-primary: #111827;
-  --color-text-secondary: #6b7280;
+  --color-badge-bg: #e6f7f5;
+  --color-text-primary: #0d2b28;
+  --color-text-secondary: #5a7370;
   --color-text-muted: #9ca3af;
   --font-sans: 'DM Sans', system-ui, sans-serif;
-  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-heading: 'Outfit', system-ui, sans-serif;
 }
 
 *, *::before, *::after {
@@ -30,8 +31,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, .font-serif {
-  font-family: 'Instrument Serif', Georgia, serif;
+h1, h2, h3, .font-heading {
+  font-family: 'Outfit', system-ui, sans-serif;
+  letter-spacing: -0.01em;
+  font-weight: 600;
 }
 
 /* Custom range slider */
@@ -49,19 +52,19 @@ input[type="range"]::-webkit-slider-thumb {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #111827;
+  background: #1a9e8f;
   cursor: pointer;
   border: 2px solid white;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 1px 4px rgba(26,158,143,0.3);
 }
 input[type="range"]::-moz-range-thumb {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #111827;
+  background: #1a9e8f;
   cursor: pointer;
   border: 2px solid white;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 1px 4px rgba(26,158,143,0.3);
 }
 
 /* Shimmer skeleton animation */

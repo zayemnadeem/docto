@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Home from './pages/patient/Home';
@@ -26,7 +26,7 @@ function PrivateRoute({ children, role }) {
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="flex flex-col items-center gap-4">
         <img src="/doctonewlogo.jpeg" alt="Docto" className="h-16 md:h-20 opacity-80 animate-pulse" />
-        <div className="w-6 h-6 border-2 border-[#111827] border-t-transparent rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-[#1a9e8f] border-t-transparent rounded-full animate-spin" />
       </div>
     </div>
   );
@@ -82,3 +82,4 @@ function App() {
 }
 
 export default App;
+

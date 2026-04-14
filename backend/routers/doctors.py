@@ -7,7 +7,7 @@ import schemas
 import auth
 from typing import List, Optional
 from uuid import UUID
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from math import radians, sin, cos, sqrt, asin
 
 router = APIRouter()
@@ -81,7 +81,14 @@ def get_slots(db: Session = Depends(get_db), current_doctor: Doctor = Depends(au
         DoctorSlot.doctor_id == current_doctor.id,
         DoctorSlot.date >= today
     ).all()
-    return slots
+    
+    valid_slots = []
+    now = datetime.now()
+    for s in slots:
+        if datetime.combine(s.date, s.start_time) > now:
+            valid_slots.append(s)
+            
+    return valid_slots
 
 @router.post("/me/slots", response_model=schemas.DoctorSlotOut)
 def add_slot(slot: schemas.DoctorSlotCreate, db: Session = Depends(get_db), current_doctor: Doctor = Depends(auth.get_current_doctor)):
@@ -191,4 +198,11 @@ def get_public_slots(id: UUID, db: Session = Depends(get_db)):
         DoctorSlot.doctor_id == id,
         DoctorSlot.date >= today
     ).all()
-    return slots
+    
+    valid_slots = []
+    cutoff = datetime.now() + timedelta(hours=12)
+    for s in slots:
+        if datetime.combine(s.date, s.start_time) > cutoff:
+            valid_slots.append(s)
+            
+    return valid_slots

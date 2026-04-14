@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -30,8 +30,8 @@ export default function Login() {
     <div
       className="min-h-screen flex items-center justify-center px-4"
       style={{
-        background: `radial-gradient(ellipse at 20% 50%, #dde8f8 0%, transparent 55%),
-                     radial-gradient(ellipse at 80% 20%, #e8dff5 0%, transparent 55%), #fff`
+        background: `radial-gradient(ellipse at 20% 50%, #c8ede9 0%, transparent 55%),
+                     radial-gradient(ellipse at 80% 20%, #d0f0ec 0%, transparent 55%), #fff`
       }}
     >
       <div className="w-full max-w-sm">
@@ -44,7 +44,7 @@ export default function Login() {
 
         {/* Card */}
         <div className="bg-white rounded-2xl border border-[#e5e7eb] shadow-sm p-8">
-          <h1 className="text-2xl text-[#111827] mb-1 text-center" style={{ fontFamily: 'Instrument Serif, serif' }}>
+          <h1 className="text-2xl text-[#0d2b28] mb-1 text-center">
             Welcome back
           </h1>
           <p className="text-sm text-[#9ca3af] text-center mb-6">Sign in to your Docto account</p>
@@ -66,7 +66,7 @@ export default function Login() {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#111827] bg-white text-[#111827]"
+                className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white text-[#0d2b28]"
               />
             </div>
             <div>
@@ -77,8 +77,8 @@ export default function Login() {
                 required
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#111827] bg-white text-[#111827]"
+                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a9e8f] bg-white text-[#0d2b28]"
               />
             </div>
 
@@ -89,16 +89,16 @@ export default function Login() {
               className={`w-full rounded-full py-3 text-sm font-medium transition mt-2 ${
                 loading
                   ? 'bg-[#f3f4f6] text-[#9ca3af] cursor-not-allowed'
-                  : 'bg-[#111827] text-white hover:bg-[#374151]'
+                  : 'bg-[#1a9e8f] text-white hover:bg-[#158577]'
               }`}
             >
-              {loading ? 'Signing in…' : 'Login'}
+              {loading ? 'Signing inâ€¦' : 'Login'}
             </button>
           </form>
 
           <p className="text-center text-sm text-[#9ca3af] mt-6">
             Don't have an account?{' '}
-            <Link to="/register" className="text-[#111827] font-medium underline underline-offset-2 hover:text-[#374151] transition">
+            <Link to="/register" className="text-[#1a9e8f] font-medium underline underline-offset-2 hover:text-[#158577] transition">
               Sign up
             </Link>
           </p>
@@ -107,3 +107,4 @@ export default function Login() {
     </div>
   );
 }
+

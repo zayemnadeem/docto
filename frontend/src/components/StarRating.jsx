@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 
 export default function StarRating({ rating, setRating, readOnly = false, totalReviews = null }) {
   const maxStars = 5;
@@ -22,10 +22,11 @@ export default function StarRating({ rating, setRating, readOnly = false, totalR
           </svg>
         ))}
       </div>
-      <span className="text-sm font-semibold text-[#111827] ml-0.5">{rating?.toFixed(1) || '--'}</span>
+      <span className="text-sm font-semibold text-[#0d2b28] ml-0.5">{rating?.toFixed(1) || '--'}</span>
       {totalReviews !== null && (
         <span className="text-sm text-[#9ca3af]">({totalReviews} reviews)</span>
       )}
     </div>
   );
 }
+
